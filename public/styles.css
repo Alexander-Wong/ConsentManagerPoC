@@ -1,0 +1,172 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Asegura que el body ocupe al menos toda la altura de la ventana */
+}
+
+header {
+    background-color: #1a1a1a;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 255, 136, 0.2);
+}
+
+
+:root {
+    --gap: 1rem;
+    --max-width: 1100px;
+    --bg: #0f172a;
+    --card-bg: #0b1220;
+    --muted: #94a3b8;
+    --accent: #f97316;
+}
+
+main {
+    flex: 1;
+    /* Hace que el main ocupe todo el espacio disponible */
+    padding: 30px;
+    margin: 20px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+}
+
+main h2 {
+    color: #ffffff;
+    font-size: 1.8em;
+    border-bottom: 2px solid #ffffff;
+    padding-bottom: 10px;
+}
+
+main p {
+    line-height: 1.6;
+    color: #d3d3d3;
+}
+
+/* Grid responsive: en pantallas grandes dos columnas, en móvil 1 columna */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--gap);
+}
+
+.card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-radius: 12px;
+    padding: 0.75rem;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+    min-height: 160px;
+    overflow: hidden;
+}
+
+.card .title {
+    font-weight: 600;
+    font-size: .98rem;
+    margin: 0 0 .5rem 0;
+    color: #e6eef8;
+}
+
+.card .subtitle {
+    margin: 0 0 .75rem 0;
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+/* Contenedor que preserva la proporción (16:9) */
+.media {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    /* 16:9 ratio */
+    border-radius: 8px;
+    overflow: hidden;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.00));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.01);
+    background-color: rgba(0, 0, 0, 0.9);
+    /* negro al 40% */
+
+}
+
+.media iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+}
+
+.disable-overlay {
+    display: none;
+}
+
+/* Pie con acciones / créditos */
+.meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-top: .6rem;
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.03);
+    padding: .25rem .5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: .78rem;
+    color: var(--accent);
+}
+
+@media (max-width:420px) {
+    body {
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 1rem;
+    }
+}
+
+footer {
+    background-color: #1a1a1a;
+    padding: 15px;
+    text-align: center;
+    border-top: 3px solid #ededed;
+    box-shadow: 0 -4px 6px rgba(255, 0, 119, 0.2);
+    width: 100%;
+    /* Asegura que el footer ocupe todo el ancho */
+}
+
+footer p {
+    margin: 0;
+    color: #ededed;
+    font-size: 1em;
+}

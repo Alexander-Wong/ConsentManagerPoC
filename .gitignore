@@ -1,0 +1,9 @@
+# Dependencias
+node_modules/
+
+# Build de producción
+dist/
+
+# Opcionalmente puedes añadir:
+.env
+*.log

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneTrust PoC</title>
+    <link rel="stylesheet" href="/styles.css">
+    `
+    <script type="module" src="/oneTrustWrapper.js"> </script>
+</head>
+
+<body>
+
+
+    <header>
+        <h1>OneTrust PoC</h1>
+    </header>
+
+    <main class="grid">
+        <!-- CARD: Video -->
+        <article class="card" aria-labelledb`y="videoTitle">
+            <h2 id="videoTitle" class="title">Iron Man — Video embebido</h2>
+            <p class="subtitle">YouTube Video embed. </p>
+
+            <div class="media media--fixed iframe-wrapper" role="group" aria-label="Reproductor de video">
+                <!-- Ejemplo: video embed desde YouTube (trailer). Reemplaza la URL por la que necesites. -->
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/PjJofEuSA78?si=FUatSpenX5zr7VyH"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div videoTag class="overlay">Accept advertising cookies</div>
+            </div>
+
+            <div class="meta">
+                <span>Source: YouTube</span>
+                <span>Version: 16:9</span>
+            </div>
+        </article>
+
+        <!-- CARD: Mapa -->
+        <article class="card" aria-labelledby="mapTitle">
+            <h2 id="mapTitle" class="title">Mapa — Costa Rica (Bing Maps)</h2>
+            <p class="subtitle">Bing Map embed for Costa Rica. You can adjust coordinates and zoom..</p>
+
+            <div class="media media--fixed iframe-wrapper" role="group" aria-label="Mapa de Costa Rica">
+                <!-- Bing Maps embed: centrado en San José, Costa Rica.
+               Si quieres otro punto o zoom, cambia `cp` (lat~lon) y `lvl` (zoom). -->
+                <iframe width="560" height="315"
+                    src="https://www.bing.com/maps/embed?h=600&w=1000&cp=9.748917~-83.753428&lvl=7&typ=d&sty=r&src=SHELL&FORM=MBEDV8"
+                    title="Mapa de Costa Rica - Bing Maps" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen></iframe>
+                <div mapTag class="overlay">Accept advertising cookies </div>
+            </div>
+
+            <div class="meta">
+                <span>Privider: Bing Maps</span>
+                <span>Centro: San José</span>
+            </div>
+        </article>
+
+        <!-- CARD: Video -->
+        <article class="card" aria-labelledby="videoTitle">
+            <h2 id="kalturaTitle" class="title">Kaltura — Video embebido</h2>
+            <p class="subtitle">Kaltura Video embed. </p>
+
+            <div class="media media--fixed iframe-wrapper" role="group" aria-label="Reproductor de video">
+                <!-- Ejemplo: video embed desde YouTube (trailer). Reemplaza la URL por la que necesites. -->
+                <iframe width="560" height="315"
+                    src="https://cdnapisec.kaltura.com/p/811441/embedPlaykitJs/uiconf_id/54097102?iframeembed=true&amp;entry_id=1_qxskuo8y"
+                    title="Kaptura video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div kalturaVideo class="overlay">Accept advertising cookies</div>
+            </div>
+
+            <div class="meta">
+                <span>Source: Kaltura</span>
+                <span>Version: 16:9</span>
+            </div>
+        </article>
+
+    </main>
+
+    <footer>
+        <p>CopyRight 2025</p>
+        <button onclick="showOneTrustBanner()">Consent Manager</button>
+    </footer>
+
+</body>
+
+</html>
