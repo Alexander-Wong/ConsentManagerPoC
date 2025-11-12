@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OneTrust PoC</title>
     <link rel="stylesheet" href="/styles.css">
-    `
-    <script type="module" src="/oneTrustWrapper.js"> </script>
+    <script type="module" src="/ConsentWrapper.js"> </script>
 </head>
 
 <body>
@@ -20,7 +19,7 @@
     <main class="grid">
         <!-- CARD: Video -->
         <article class="card" aria-labelledb`y="videoTitle">
-            <h2 id="videoTitle" class="title">Iron Man — Video embebido</h2>
+            <h2 id="videoTitle" class="title">Iron Man — Video embed</h2>
             <p class="subtitle">YouTube Video embed. </p>
 
             <div class="media media--fixed iframe-wrapper" role="group" aria-label="Reproductor de video">
@@ -54,14 +53,14 @@
             </div>
 
             <div class="meta">
-                <span>Privider: Bing Maps</span>
+                <span>Provider: Bing Maps</span>
                 <span>Centro: San José</span>
             </div>
         </article>
 
         <!-- CARD: Video -->
         <article class="card" aria-labelledby="videoTitle">
-            <h2 id="kalturaTitle" class="title">Kaltura — Video embebido</h2>
+            <h2 id="kalturaTitle" class="title">Kaltura — Video embed</h2>
             <p class="subtitle">Kaltura Video embed. </p>
 
             <div class="media media--fixed iframe-wrapper" role="group" aria-label="Reproductor de video">
@@ -76,6 +75,65 @@
 
             <div class="meta">
                 <span>Source: Kaltura</span>
+                <span>Version: 16:9</span>
+            </div>
+        </article>
+
+        <!-- CARD: Black Panther Video 1 -->
+        <article class="card" aria-labelledby="blackPanther1Title">
+            <h2 id="blackPanther1Title" class="title">Black Panther — Official Trailer</h2>
+            <p class="subtitle">YouTube Video embed - Black Panther Official Trailer.</p>
+
+            <div class="media media--fixed iframe-wrapper" role="group" aria-label="Black Panther video player">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/xjDjIWPwcPU"
+                    title="Black Panther Official Trailer" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div videoTag class="overlay">Accept advertising cookies</div>
+            </div>
+
+            <div class="meta">
+                <span>Source: YouTube</span>
+                <span>Version: 16:9</span>
+            </div>
+        </article>
+
+        <!-- CARD: Black Panther Video 2 -->
+        <article class="card" aria-labelledby="blackPanther2Title">
+            <h2 id="blackPanther2Title" class="title">Black Panther — Wakanda Forever</h2>
+            <p class="subtitle">YouTube Video embed - Black Panther: Wakanda Forever Trailer.</p>
+
+            <div class="media media--fixed iframe-wrapper" role="group"
+                aria-label="Black Panther Wakanda Forever video player">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/_Z3QKkl1WyM"
+                    title="Black Panther Wakanda Forever Trailer" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div videoTag class="overlay">Accept advertising cookies</div>
+            </div>
+
+            <div class="meta">
+                <span>Source: YouTube</span>
+                <span>Version: 16:9</span>
+            </div>
+        </article>
+
+        <!-- CARD: Black Panther Video 3 -->
+        <article class="card" aria-labelledby="blackPanther3Title">
+            <h2 id="blackPanther3Title" class="title">Black Panther — Behind the Scenes</h2>
+            <p class="subtitle">YouTube Video embed - Black Panther Behind the Scenes.</p>
+
+            <div class="media media--fixed iframe-wrapper" role="group"
+                aria-label="Black Panther Behind the Scenes video player">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/HI20qCxH73U"
+                    title="Black Panther Behind the Scenes" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div videoTag class="overlay">Accept advertising cookies</div>
+            </div>
+
+            <div class="meta">
+                <span>Source: YouTube</span>
                 <span>Version: 16:9</span>
             </div>
         </article>

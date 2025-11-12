@@ -2,12 +2,15 @@ import { ConsentEngineConfig } from "./ConsentEngineConfig.js";
 import { CookieCategory } from "./CookieCategory.js";
 import { ConditionalEval } from "./CookieEvaluator.js";
 import { CookieCondition } from "./CookieType.js";
+import { IConsentProvider } from "./providers/IConsentProvider.js";
 
 export class ConsentEngine {
   config :  ConsentEngineConfig;
+  private provider: IConsentProvider;
 
-  constructor(config : ConsentEngineConfig) {
+  constructor(config : ConsentEngineConfig, provider: IConsentProvider) {
     this.config = config;
+    this.provider = provider;
   } 
   
   /* Deletes a cookie by name */
@@ -16,9 +19,9 @@ export class ConsentEngine {
     console.log(`🧹 Cookie eliminada: ${name}`);
   }
 
-  /* Returns an array of active cookie category IDs from OneTrust */ 
+  /* Returns an array of active cookie category IDs - provider-agnostic */
   getCookiesState = (): ActiveCookies => {
-     return OptanonActiveGroups ? OptanonActiveGroups.split(',') : [];
+     return this.provider.getActiveConsents();
   }
 
   /* Evaluates cookie consents and deletes cookies if consent is not given */
@@ -56,34 +59,31 @@ export class ConsentEngine {
     }
    
     if (item.cookies && item.cookies.length > 0) {
-      const toOptanonClasses = item.cookies.map(cookie => `optanon-category-${cookie}`).join(" ");
-      script.classList.add(toOptanonClasses);
+      const providerClasses = item.cookies
+        .map(cookie => this.provider.getConsentCategoryClass(cookie))
+        .join(" ");
+      script.className = providerClasses;
     }
     
     document.head.appendChild(script);
   } 
-  /* Injects OneTrust script */
-  injectOneTrustScript = (): void =>  {
-     const script = document.createElement("script");
-     script.src = "https://cdn.cookielaw.org/scripttemplates/otSDKStub.js";
-     script.type = "text/javascript";
-     script.charset = "UTF-8";
+  /* Injects provider script - provider-agnostic */
+  injectProviderScript = (): void =>  {
+     this.provider.injectProviderScript();
 
-      // Important OneTrust attributes:
-     script.setAttribute("data-document-language", "true");
-     script.setAttribute("data-domain-script", "01976a4b-0690-72c6-a7ee-3701352a5c93-test");
-
-      // Append it to HEAD (recommended)
-     document.head.appendChild(script);
+     // Call initialization hook if available
+     if (this.provider.initialize) {
+       this.provider.initialize();
+     }
   }
 
-  /* Injects a script into the document header */
+  /* Injects all scripts into the document header */
   injectScripts = (): void => {
-    
+
     this.config.cookieCategories.forEach(category => {
         this.createHeaderScript(category);
     })
-    this.injectOneTrustScript(); 
+    this.injectProviderScript();
   }
   
 
@@ -99,6 +99,11 @@ export class ConsentEngine {
       const activeCookies = this.getCookiesState();
       this.evaluateCookiesConsent(activeCookies);
       this.evaluateComponentConsent(activeCookies);
+  }
+
+  /* Returns the provider instance for advanced use cases */
+  getProvider(): IConsentProvider {
+    return this.provider;
   }
 
 }

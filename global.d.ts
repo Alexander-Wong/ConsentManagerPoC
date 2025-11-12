@@ -1,10 +1,9 @@
-// ✅ Global variable injected by OneTrust
+// Global variables injected by OneTrust SDK
+// Note: These are now encapsulated in OneTrustProvider, but still need declarations for runtime access
 declare const OptanonActiveGroups: string;
+declare const Optanon: any;
+declare const Onetrust: any;
 
-// ✅ DO NOT declare "Onetrust" — OneTrust uses capital T
-// If you declare it, TS will think it's a different variable and fail.
-declare const Optanon: object;
-
-// ✅ Define the type you want
+// Type definitions
 type ActiveCookies = string[];
 
