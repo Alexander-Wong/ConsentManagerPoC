@@ -24,7 +24,7 @@
   },
   "config": {
     "conventional-changelog": {
-      "preset": "./changelog.config.js"
+      "preset": "./dist/changelog.config.js"
     }
   },
   "keywords": [
