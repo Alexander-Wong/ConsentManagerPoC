@@ -15,9 +15,10 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch",
-    "version:patch": "npm version patch -m 'chore: bump version to %s'",
-    "version:minor": "npm version minor -m 'feat: bump version to %s'",
-    "version:major": "npm version major -m 'feat!: bump version to %s (breaking change)'",
+    "release:patch": "npm run _ensure-clean && npm version patch -m \"chore: release patch %s\"",
+    "release:minor": "npm run _ensure-clean && npm version minor -m \"feat: release minor %s\"",
+    "release:major": "npm run _ensure-clean && npm version major -m \"feat!: release major %s (breaking change)\"",
+    "_ensure-clean": "git diff-index --quiet HEAD -- || (echo '❌ Working directory not clean. Commit your changes first!' && exit 1)",
     "version:show": "node -p \"require('./package.json').version\"",
     "preversion": "npm test && npm run build",
     "postversion": "git push && git push --tags"
