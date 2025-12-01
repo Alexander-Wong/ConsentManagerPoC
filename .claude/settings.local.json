@@ -4,7 +4,9 @@
       "Bash(tree:*)",
       "Bash(npm run tsc:*)",
       "Bash(find:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(for dir in /Users/alexanderwong/Documents/ConsentManagerPoC/src/*/)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

@@ -1,4 +1,4 @@
-import { CookieConditionalType } from "./CookieConditionalType.js";
+import { CookieConditionalType } from "../../types/CookieConditionalType.js";
 
 
 type CookieEvaluator<T> = (source: T[], target: T[]) => boolean;

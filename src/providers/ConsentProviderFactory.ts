@@ -1,5 +1,5 @@
 import { IConsentProvider } from './IConsentProvider.js';
-import { OneTrustProvider } from './OneTrust/OneTrustProvider.js';
+import { OneTrustProvider } from './onetrust/OneTrustProvider.js';
 import { ProviderFactoryConfig } from './IProviderFactoryConfig.js';
 import { ProviderType } from './ProviderType.js';
 import { IProviderConfig } from './IProviderConfig.js';

@@ -1,4 +1,5 @@
-import { BaseResource } from "../resources/BaseResource.js";
+import { BaseResource } from "../../resources/BaseResource.js";
+import { ActiveCookies } from "../../types/ActiveCookies.js";
 
 /**
  * Service responsible for controlling UI resource visibility based on cookie consent.

@@ -1,13 +1,14 @@
-import { CookieConditionalType } from "../CookieConditionalType.js";
-import { ConditionalEval } from "../CookieEvaluator.js";
-import { CookieType } from "../CookieType.js";
-import { ResourceType } from "../ResourceType.js";
+import { CookieConditionalType } from "../types/CookieConditionalType.js";
+import { ConditionalEval } from "../utils/evaluation/CookieEvaluator.js";
+import { CookieType } from "../types/CookieType.js";
+import { ResourceType } from "../types/ResourceType.js";
+import { ActiveCookies } from "../types/ActiveCookies.js";
 
-export abstract class BaseResource {
+export class BaseResource {
   resourceType: ResourceType;
   cookies: CookieType[];
   condition: CookieConditionalType;
-  
+
   constructor(resourceType : ResourceType, cookies: CookieType[],  condition: CookieConditionalType) {
     this.resourceType = resourceType;
     this.cookies = cookies;

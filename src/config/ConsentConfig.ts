@@ -1,8 +1,8 @@
 import { ConsentEngineConfig } from "./ConsentEngineConfig.js";
-import { CookieConditionalType } from "./CookieConditionalType.js";
-import { CookieType } from "./CookieType.js";
-import { Resource } from "./resources/Resource.js";
-import { ResourceType } from "./ResourceType.js";
+import { CookieConditionalType } from "../types/CookieConditionalType.js";
+import { CookieType } from "../types/CookieType.js";
+import { BaseResource } from "../resources/BaseResource.js";
+import { ResourceType } from "../types/ResourceType.js";
 
 
 export const consentEngineConfig = new ConsentEngineConfig(
@@ -64,13 +64,13 @@ export const consentEngineConfig = new ConsentEngineConfig(
         }
 
     ], [
-        new Resource(ResourceType.Map, 
-                    [CookieType.C0002], 
+        new BaseResource(ResourceType.Map,
+                    [CookieType.C0002],
                      CookieConditionalType.AND),
-        new Resource(ResourceType.Video, 
-                    [CookieType.C0003], 
+        new BaseResource(ResourceType.Video,
+                    [CookieType.C0003],
                     CookieConditionalType.AND),
-        new Resource(ResourceType.Kaltura,
+        new BaseResource(ResourceType.Kaltura,
                     [CookieType.C0004,],
                     CookieConditionalType.AND)
     ]

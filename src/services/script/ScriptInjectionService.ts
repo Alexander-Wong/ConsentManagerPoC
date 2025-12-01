@@ -1,5 +1,5 @@
-import { CookieCategory } from "../CookieCategory.js";
-import { IConsentProvider } from "../providers/IConsentProvider.js";
+import { CookieCategory } from "../../types/CookieCategory.js";
+import { IConsentProvider } from "../../providers/IConsentProvider.js";
 
 /**
  * Service responsible for script injection and management.

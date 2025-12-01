@@ -1,5 +1,5 @@
-import { consentEngineConfig } from "./ConsentConfig.js";
-import { ConsentEngine } from "./ConsentEngine.js";
+import { consentEngineConfig } from "./config/ConsentConfig.js";
+import { ConsentEngine } from "./core/ConsentEngine.js";
 import { ConsentProviderFactory } from "./providers/ConsentProviderFactory.js";
 import { ProviderType } from "./providers/ProviderType.js";
 

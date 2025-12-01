@@ -1,7 +1,8 @@
-import { CookieCategory } from "../CookieCategory.js";
-import { ConditionalEval } from "../CookieEvaluator.js";
-import { CookieConditionalType } from "../CookieConditionalType.js";
-import { CookieManagementService } from "./CookieManagementService.js";
+import { CookieCategory } from "../../types/CookieCategory.js";
+import { ConditionalEval } from "../../utils/evaluation/CookieEvaluator.js";
+import { CookieConditionalType } from "../../types/CookieConditionalType.js";
+import { CookieManagementService } from "../cookies/CookieManagementService.js";
+import { ActiveCookies } from "../../types/ActiveCookies.js";
 
 /**
  * Service responsible for evaluating consent conditions and taking action.

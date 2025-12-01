@@ -15,6 +15,9 @@ interface OnetrustAPI {
   IsAlertBoxClosed(): boolean;
 }
 
+// Import the explicit ActiveCookies type
+import { ActiveCookies } from "./src/types/ActiveCookies.js";
+
 // Global Window interface extension
 declare global {
   interface Window {
@@ -28,7 +31,7 @@ declare global {
   // Global constants for direct access (legacy support)
   const OptanonActiveGroups: string;
 
-  // Type definitions
+  // Re-export ActiveCookies type for global access (backward compatibility)
   type ActiveCookies = string[];
 }
 
