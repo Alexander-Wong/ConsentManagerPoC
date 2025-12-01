@@ -5,6 +5,7 @@ import { CookieManagementService } from "../services/cookies/CookieManagementSer
 import { ResourceVisibilityService } from "../services/resources/ResourceVisibilityService.js";
 import { ConsentEvaluationService } from "../services/evaluation/ConsentEvaluationService.js";
 import { ActiveCookies } from "../types/ActiveCookies.js";
+import { getVersion, getVersionInfo } from "../version.js";
 
 /**
  * Orchestrator for consent management.
@@ -92,6 +93,9 @@ export class ConsentEngine {
    * Injects all scripts (categories + provider SDK).
    */
   start(): void {
+    // Log version information
+    console.log(`[ConsentEngine] v${getVersion()} - Starting consent management`);
+
     if (!this.config.cookieCategories) {
       console.error('[ConsentEngine] Invalid configuration - missing cookieCategories');
       return;
@@ -135,5 +139,21 @@ export class ConsentEngine {
    */
   getEvaluationService(): ConsentEvaluationService {
     return this.evaluationService;
+  }
+
+  /**
+   * Gets the current version of the Consent Manager.
+   * @returns The semantic version string (e.g., "1.0.0")
+   */
+  getVersion(): string {
+    return getVersion();
+  }
+
+  /**
+   * Gets detailed version information.
+   * @returns Object containing version, name, and description
+   */
+  getVersionInfo(): typeof import("../version.js").VERSION_INFO {
+    return getVersionInfo();
   }
 }
