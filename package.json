@@ -33,7 +33,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/vml/consent-manager.git"
+    "url": "https://github.com/Alexander-Wong/ConsentManagerPoC.git "
   },
   "dependencies": {
     "express": "^5.1.0",
