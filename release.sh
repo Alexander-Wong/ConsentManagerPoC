@@ -12,14 +12,20 @@ fi
 
 echo "📦 Starting $VERSION_TYPE release..."
 
-# Ensure clean working directory
-if ! git diff-index --quiet HEAD --; then
-  echo "❌ Working directory not clean. Commit or stash your changes first."
+# Ensure at least some changes are staged
+if git diff --cached --quiet; then
+  echo "❌ No staged changes found. Stage what you want to release first."
   exit 1
 fi
 
+# Stash everything except staged files
+echo "📥 Stashing unstaged changes..."
+git stash -q --keep-index
+
+STASHED=true
+
 # Ask developer for the commit message
-echo "📝 Enter the release commit message (your custom message):"
+echo "📝 Enter your release commit message:"
 read COMMIT_MSG
 
 # Run tests and build
@@ -29,31 +35,38 @@ npm test
 echo "🏗️ Building project..."
 npm run build
 
-# Bump version (but do NOT commit/tag yet)
+# Bump version without auto-commit or tag
 echo "🔢 Bumping version..."
 npm version $VERSION_TYPE --no-git-tag-version
 
-# Update CHANGELOG
+# Generate/update the changelog
 echo "📝 Updating CHANGELOG.md..."
 npm run changelog:update
 
-# Stage all changes
+# Stage everything for the release commit
 git add .
 
-# Create a single commit with developer message
-echo "🔒 Creating single release commit..."
+# Create single commit
+echo "🔒 Creating release commit..."
 git commit -m "$COMMIT_MSG"
 
-# Extract new version
+# Get new version number
 VERSION=$(node -p "require('./package.json').version")
 
-# Create git tag
+# Tag the release
 echo "🏷️ Tagging version v$VERSION..."
 git tag "v$VERSION"
 
-# Push commit + tag
+# Push commit and tag
 echo "📤 Pushing to origin..."
 git push
 git push --tags
 
+# Restore unstaged changes
+if [ "$STASHED" = true ]; then
+  echo "📤 Restoring unstaged changes..."
+  git stash pop -q || true
+fi
+
 echo "🎉 Release v$VERSION completed successfully!"
+echo "✔ All unstaged changes restored."
