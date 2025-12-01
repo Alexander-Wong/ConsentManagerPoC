@@ -1,10 +1,11 @@
 import { ConsentEngineConfig } from "./ConsentEngineConfig.js";
-import { CookieCondition, CookieType } from "./CookieType.js";
+import { CookieConditionalType } from "./CookieConditionalType.js";
+import { CookieType } from "./CookieType.js";
 import { Resource } from "./resources/Resource.js";
 import { ResourceType } from "./ResourceType.js";
 
 
-export const engineConfig = new ConsentEngineConfig(
+export const consentEngineConfig = new ConsentEngineConfig(
     [
         {
             cookies: [CookieType.C0001],
@@ -65,12 +66,12 @@ export const engineConfig = new ConsentEngineConfig(
     ], [
         new Resource(ResourceType.Map, 
                     [CookieType.C0002], 
-                     CookieCondition.AND),
+                     CookieConditionalType.AND),
         new Resource(ResourceType.Video, 
                     [CookieType.C0003], 
-                    CookieCondition.AND),
+                    CookieConditionalType.AND),
         new Resource(ResourceType.Kaltura,
                     [CookieType.C0004,],
-                    CookieCondition.AND)
+                    CookieConditionalType.AND)
     ]
 );

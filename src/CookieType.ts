@@ -4,8 +4,3 @@ export enum CookieType {
   C0003 = "C0003", // extra functionality cookies
   C0004 = "C0004" // advertising cookies
 }
-
-export enum CookieCondition {
-  AND,
-  OR 
-}

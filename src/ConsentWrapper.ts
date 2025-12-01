@@ -1,51 +1,33 @@
-import { engineConfig } from "./ConsentConfig.js";
+import { consentEngineConfig } from "./ConsentConfig.js";
 import { ConsentEngine } from "./ConsentEngine.js";
-import { ConsentProviderFactory, ProviderType } from "./providers/ConsentProviderFactory.js";
+import { ConsentProviderFactory } from "./providers/ConsentProviderFactory.js";
+import { ProviderType } from "./providers/ProviderType.js";
 
-// Create provider using factory - explicitly specifying OneTrust
+
+const onConsentInit = () => {
+    console.log('🚀 Consent system initialized - running first evaluation');
+    engine.evaluateConsents();
+};
+
+const onConsentChanged = () => {
+    console.log('🔄 User consent updated - re-evaluating');
+    engine.evaluateConsents();
+};
+
+// Create provider with callbacks in config
 const provider = ConsentProviderFactory.createProvider({
     type: ProviderType.ONETRUST,
     config: {
         scriptUrl: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js',
         domainScript: '01976a4b-0690-72c6-a7ee-3701352a5c93-test',
-        documentLanguage: true
+        documentLanguage: true,
+        onConsentInit,
+        onConsentChanged
     }
 });
 
-// Inject provider into consent engine
-const engine = new ConsentEngine(engineConfig, provider);
+const engine = new ConsentEngine(consentEngineConfig, provider);
+engine.start();
 
-engine.injectScripts();
-let isFirstLoad = false;
+window.showProviderBanner = () => provider.showConsentBanner();
 
-/* Provider callback function executed after consent banner initialization */
-function OptanonWrapper() {
-    console.log(`✅ ${provider.getProviderName()} OptanonWrapper Loaded`);
-
-    const checkConsent = () => {
-        engine.evaluateConsents();
-     }
-
-    if (!isFirstLoad) {
-        isFirstLoad = true;
-        checkConsent();
-    }
-
-    // Register consent change listener using provider interface
-    provider.onConsentChanged(() => {
-        console.log('🔄 Consent changed - re-evaluating');
-        checkConsent();
-    });
-}
-
-/* Function to show consent banner - provider-agnostic */
-function showConsentBanner() {
-    provider.showBanner();
-}
-
-(window as any).OptanonWrapper = OptanonWrapper;
-
-// Expose banner function (renamed to be provider-agnostic)
-(window as any).showConsentBanner = showConsentBanner;
-// Keep backward compatibility
-(window as any).showOneTrustBanner = showConsentBanner;

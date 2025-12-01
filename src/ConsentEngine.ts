@@ -1,109 +1,92 @@
 import { ConsentEngineConfig } from "./ConsentEngineConfig.js";
-import { CookieCategory } from "./CookieCategory.js";
-import { ConditionalEval } from "./CookieEvaluator.js";
-import { CookieCondition } from "./CookieType.js";
 import { IConsentProvider } from "./providers/IConsentProvider.js";
+import { ScriptInjectionService } from "./services/ScriptInjectionService.js";
+import { CookieManagementService } from "./services/CookieManagementService.js";
+import { ResourceVisibilityService } from "./services/ResourceVisibilityService.js";
+import { ConsentEvaluationService } from "./services/ConsentEvaluationService.js";
 
+/**
+ * Orchestrator for consent management.
+ * Coordinates services but delegates specific responsibilities to specialized services.
+ */
 export class ConsentEngine {
-  config :  ConsentEngineConfig;
-  private provider: IConsentProvider;
+  private scriptService: ScriptInjectionService;
+  private cookieService: CookieManagementService;
+  private resourceService: ResourceVisibilityService;
+  private evaluationService: ConsentEvaluationService;
 
-  constructor(config : ConsentEngineConfig, provider: IConsentProvider) {
-    this.config = config;
-    this.provider = provider;
-  } 
-  
-  /* Deletes a cookie by name */
-  deleteCookie = (name: string): void => {
-    document.cookie = `${name}=; Path=/; Max-Age=0; Secure; SameSite=None`;
-    console.log(`🧹 Cookie eliminada: ${name}`);
+  constructor(
+    public config: ConsentEngineConfig,
+    private provider: IConsentProvider
+  ) {
+    if (!config) {
+      throw new Error('[ConsentEngine] ConsentEngineConfig is required');
+    }
+
+    if (!provider) {
+      throw new Error('[ConsentEngine] IConsentProvider is required');
+    }
+
+    this.scriptService = new ScriptInjectionService(provider);
+    this.cookieService = new CookieManagementService();
+    this.resourceService = new ResourceVisibilityService();
+    this.evaluationService = new ConsentEvaluationService(this.cookieService);
   }
 
-  /* Returns an array of active cookie category IDs - provider-agnostic */
-  getCookiesState = (): ActiveCookies => {
-     return this.provider.getActiveConsents();
+  /**
+   * Gets current active consents from provider.
+   */
+  getActiveConsents(): ActiveCookies {
+    try {
+      return this.provider.getActiveConsents() || [];
+    } catch (error) {
+      console.error('[ConsentEngine] Failed to get active consents:', error);
+      return [];
+    }
   }
 
-  /* Evaluates cookie consents and deletes cookies if consent is not given */
-  evaluateCookiesConsent = (activeCookies: ActiveCookies): void => {
-    
-    this.config.cookieCategories.forEach(cfg => {
-        const isActive = ConditionalEval.eval(cfg.cookies, activeCookies, CookieCondition.AND);
-        if (!isActive) {
-            cfg.cookieNames.forEach(this.deleteCookie);
-        }
-    });
+  /**
+   * Main evaluation method - orchestrates cookie and resource evaluation.
+   */
+  evaluateConsents(): void {
+    try {
+      const activeCookies = this.getActiveConsents();
+
+      if (!this.config.cookieCategories || !this.config.resources) {
+        console.error('[ConsentEngine] Invalid configuration - missing cookieCategories or resources');
+        return;
+      }
+
+      // Delegate to specialized services
+      this.evaluationService.evaluateCookieConsents(
+        this.config.cookieCategories,
+        activeCookies
+      );
+
+      this.resourceService.evaluateAllResources(
+        this.config.resources,
+        activeCookies
+      );
+    } catch (error) {
+      console.error('[ConsentEngine] Failed to evaluate consents:', error);
+    }
   }
-  
 
-  /* Creates a script element for a given cookie category item */
-  public createHeaderScript = (item: CookieCategory): void =>  {
-
-    if (!item || (!item.code && !item.src && !item.defer)) {
+  /**
+   * Injects all scripts (categories + provider SDK).
+   */
+  start(): void {
+    if (!this.config.cookieCategories) {
+      console.error('[ConsentEngine] Invalid configuration - missing cookieCategories');
       return;
-    };
-    
-    const script = document.createElement("script");
-    script.type = "text/plain";
-
-    if (item.defer){
-      script.src = "./defer.js";
-      script.setAttribute("data-scripts", JSON.stringify(item.defer));
     }
-    
-    if (item.code) {
-        script.textContent = item.code;
+
+    try {
+      this.scriptService.injectAllCategoryScripts(this.config.cookieCategories);
+      this.scriptService.injectProviderScript();
+    } catch (error) {
+      console.error('[ConsentEngine] Failed to start:', error);
     }
-    if (item.src) {
-        script.src = item.src;
-    }
-   
-    if (item.cookies && item.cookies.length > 0) {
-      const providerClasses = item.cookies
-        .map(cookie => this.provider.getConsentCategoryClass(cookie))
-        .join(" ");
-      script.className = providerClasses;
-    }
-    
-    document.head.appendChild(script);
-  } 
-  /* Injects provider script - provider-agnostic */
-  injectProviderScript = (): void =>  {
-     this.provider.injectProviderScript();
-
-     // Call initialization hook if available
-     if (this.provider.initialize) {
-       this.provider.initialize();
-     }
   }
-
-  /* Injects all scripts into the document header */
-  injectScripts = (): void => {
-
-    this.config.cookieCategories.forEach(category => {
-        this.createHeaderScript(category);
-    })
-    this.injectProviderScript();
-  }
-  
-
-  /* Evaluates component consents and injects scripts if consent is given */
-  evaluateComponentConsent = (activeCookies: ActiveCookies): void => {
-    this.config.resources.forEach(resource => {
-        resource.checkConsent(activeCookies);
-    })
-  }
-
-  /* Main method to evaluate all consents */
-  evaluateConsents = (): void => {
-      const activeCookies = this.getCookiesState();
-      this.evaluateCookiesConsent(activeCookies);
-      this.evaluateComponentConsent(activeCookies);
-  }
-
-  /* Returns the provider instance for advanced use cases */
-  getProvider(): IConsentProvider {
-    return this.provider;
-  }
-
+ 
 }

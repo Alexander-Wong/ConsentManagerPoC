@@ -6,7 +6,7 @@ export class CookieCategory {
     code?: string;
     src?: string;
     defer?: CookieCategory[];
-    constructor(cookies: CookieType[], cookieNames: string[] , code?: string, src?: string, defer?: any) {
+    constructor(cookies: CookieType[], cookieNames: string[] , code?: string, src?: string, defer?: CookieCategory[]) {
         this.cookies = cookies;
         this.cookieNames = cookieNames;
         this.code = code;

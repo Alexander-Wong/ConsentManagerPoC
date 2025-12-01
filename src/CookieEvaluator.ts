@@ -1,15 +1,16 @@
-import { CookieCondition } from "./CookieType.js";
+import { CookieConditionalType } from "./CookieConditionalType.js";
+
 
 type CookieEvaluator<T> = (source: T[], target: T[]) => boolean;
 
 export class ConditionalEval {
-  private static evaluators: Record<CookieCondition, CookieEvaluator<any>> = {
-    [CookieCondition.AND]: <T>(source: T[], target: T[]): boolean => {
+  private static evaluators: Record<CookieConditionalType, CookieEvaluator<any>> = {
+    [CookieConditionalType.AND]: <T>(source: T[], target: T[]): boolean => {
       if (source.length === 0) return true;
       return source.every(item => target.includes(item));
     },
 
-    [CookieCondition.OR]: <T>(source: T[], target: T[]): boolean => {
+    [CookieConditionalType.OR]: <T>(source: T[], target: T[]): boolean => {
       if (source.length === 0) return false;
       return source.some(item => target.includes(item));
     },
@@ -21,7 +22,7 @@ export class ConditionalEval {
   static eval<T>(
     source: T[],
     target: T[],
-    condition: CookieCondition
+    condition: CookieConditionalType
   ): boolean {
     const evaluator = this.evaluators[condition];
     if (!evaluator) {
