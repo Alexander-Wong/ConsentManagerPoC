@@ -3,7 +3,7 @@
   "license": "ISC",
   "homepage": "https://github.com/your-org/consent-manager#readme",
   "name": "@vml/consent-manager",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Provider-agnostic consent management system for GDPR/CCPA cookie compliance",
   "main": "dist/ConsentWrapper.js",
   "types": "dist/ConsentWrapper.d.ts",
