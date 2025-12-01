@@ -1,34 +1,59 @@
 #!/bin/bash
 
-# 1) Save the version type (patch, minor, major)
+# Exit on error
+set -e
+
 VERSION_TYPE=$1
 
-# 2) Stash everything
-git stash -q --keep-index
+if [ -z "$VERSION_TYPE" ]; then
+  echo "❌ You must pass a version type: patch | minor | major"
+  exit 1
+fi
 
-# 3) Run tests + build (prepare)
-npm test && npm run build
+echo "📦 Starting $VERSION_TYPE release..."
 
-# 4) Bump the version BUT DO NOT COMMIT
+# Ensure clean working directory
+if ! git diff-index --quiet HEAD --; then
+  echo "❌ Working directory not clean. Commit or stash your changes first."
+  exit 1
+fi
+
+# Ask developer for the commit message
+echo "📝 Enter the release commit message (your custom message):"
+read COMMIT_MSG
+
+# Run tests and build
+echo "🧪 Running tests..."
+npm test
+
+echo "🏗️ Building project..."
+npm run build
+
+# Bump version (but do NOT commit/tag yet)
+echo "🔢 Bumping version..."
 npm version $VERSION_TYPE --no-git-tag-version
 
-# 5) Reapply developer changes
-git stash pop -q
+# Update CHANGELOG
+echo "📝 Updating CHANGELOG.md..."
+npm run changelog:update
 
-# 6) Stage everything including version bump
+# Stage all changes
 git add .
 
-# 7) Create a single commit with dev-provided msg
-echo "Enter release commit message:"
-read COMMIT_MSG
+# Create a single commit with developer message
+echo "🔒 Creating single release commit..."
 git commit -m "$COMMIT_MSG"
 
-# 8) Create the tag
-VERSION=$(node -p \"require('./package.json').version\")
-git tag v$VERSION
+# Extract new version
+VERSION=$(node -p "require('./package.json').version")
 
-# 9) Push commit + tag
+# Create git tag
+echo "🏷️ Tagging version v$VERSION..."
+git tag "v$VERSION"
+
+# Push commit + tag
+echo "📤 Pushing to origin..."
 git push
 git push --tags
 
-echo "✔ Release $VERSION completed in a single commit!"
+echo "🎉 Release v$VERSION completed successfully!"

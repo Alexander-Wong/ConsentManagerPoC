@@ -19,6 +19,9 @@
     "release:minor": "npm run _release minor",
     "release:major": "npm run _release major",
     "_release": "sh ./release.sh",
+    "changelog:init": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog:preview": "conventional-changelog -p angular",
     "version:show": "node -p \"require('./package.json').version\""
   },
   "keywords": [
@@ -41,6 +44,7 @@
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.14",
     "@vitest/ui": "^4.0.14",
+    "conventional-changelog-cli": "^5.0.0",
     "happy-dom": "^20.0.11",
     "vitest": "^4.0.14"
   }
