@@ -3,7 +3,7 @@
   "license": "ISC",
   "homepage": "https://github.com/your-org/consent-manager#readme",
   "name": "@vml/consent-manager",
-  "version": "1.0.5",
+  "version": "1.0.0",
   "description": "Provider-agnostic consent management system for GDPR/CCPA cookie compliance",
   "main": "dist/ConsentWrapper.js",
   "types": "dist/ConsentWrapper.d.ts",
@@ -19,9 +19,7 @@
     "release:minor": "npm run _release minor",
     "release:major": "npm run _release major",
     "_release": "sh ./release.sh",
-    "version:show": "node -p \"require('./package.json').version\"",
-    "preversion": "npm test && npm run build",
-    "postversion": "git push && git push --tags"
+    "version:show": "node -p \"require('./package.json').version\""
   },
   "keywords": [
     "consent",
@@ -32,7 +30,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/consent-manager.git"
+    "url": "https://github.com/vml/consent-manager.git"
   },
   "dependencies": {
     "express": "^5.1.0",
