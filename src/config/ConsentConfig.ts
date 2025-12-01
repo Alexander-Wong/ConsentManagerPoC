@@ -8,7 +8,7 @@ import { ResourceType } from "../types/ResourceType.js";
 export const consentEngineConfig = new ConsentEngineConfig(
     [
         {
-            cookies: [CookieType.C0002],
+            cookies: [CookieType.C0001],
             cookieNames: ['func_site_cookie'],
             code: `
                  document.cookie = "func_site_cookie=1; Path=/; Secure; SameSite=None;";
