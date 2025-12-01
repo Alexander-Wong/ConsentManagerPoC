@@ -1,0 +1,7 @@
+{
+  "vitest.enable": true,
+  "vitest.commandLine": "npm test --",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  }
+}

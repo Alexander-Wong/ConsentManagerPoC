@@ -6,7 +6,11 @@
       "Bash(find:*)",
       "Bash(mkdir:*)",
       "Bash(for dir in /Users/alexanderwong/Documents/ConsentManagerPoC/src/*/)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:coverage:*)"
     ],
     "deny": [],
     "ask": []

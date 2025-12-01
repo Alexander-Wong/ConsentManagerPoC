@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:watch": "vitest --watch"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +19,12 @@
     "express": "^5.1.0",
     "nodemon": "^3.1.10",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.0.14",
+    "@vitest/ui": "^4.0.14",
+    "happy-dom": "^20.0.11",
+    "vitest": "^4.0.14"
   }
 }

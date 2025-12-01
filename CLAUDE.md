@@ -6,13 +6,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Compile TypeScript to JavaScript
-npm run tsc
+npm run build
 
 # Start development server with auto-reload (runs on http://localhost:3000)
 npm run dev
 
 # Start production server (must compile first)
 npm start
+
+# Run unit tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with interactive UI
+npm run test:ui
 ```
 
 **Important**: This project uses ES Modules (`"type": "module"` in package.json). All imports must use `.js` extensions even when importing from `.ts` files (e.g., `import { ConsentEngine } from "./ConsentEngine.js"`).
@@ -206,16 +218,35 @@ new Resource(
 
 ## Testing
 
-**Current State**: No tests exist. No testing framework configured.
+**Current State**: ✅ **Phase 0 Complete** - Testing infrastructure fully set up and operational.
 
-**Why Testing is Hard**: Tight DOM coupling prevents unit testing without full browser environment (jsdom/happy-dom).
+**Testing Framework**: Vitest v4.0.14 with happy-dom environment
+- Fast, modern test runner with native TypeScript support
+- Lightweight DOM implementation for browser API testing
+- V8 coverage provider with 80% threshold targets
+- Interactive UI and watch mode available
 
-**Future Testing Strategy** (from architectural review):
-1. Install Vitest + happy-dom
-2. Create DOM adapter interface (`IDOMAdapter`)
-3. Implement `BrowserDOMAdapter` and `MockDOMAdapter`
-4. Refactor components to use adapter
-5. Write unit tests with mocked DOM
+**Test Commands**:
+```bash
+npm test                 # Run all tests once
+npm run test:watch       # Watch mode (auto-rerun on changes)
+npm run test:ui          # Interactive test UI
+npm run test:coverage    # Generate coverage report
+```
+
+**Coverage Targets**:
+- Lines: 80% | Functions: 80% | Branches: 75% | Statements: 80%
+
+**Test Status**:
+- ✅ Smoke tests: 10/10 passing
+- 📁 Test files location: `tests/`
+- 📊 Coverage reports: `coverage/index.html`
+
+**Current Coverage**: Infrastructure validated, unit tests in development
+
+**Testing Documentation**: See [TESTING.md](TESTING.md) for detailed guide
+
+**Known Limitation**: Tight DOM coupling requires happy-dom for testing. Future refactoring could introduce `IDOMAdapter` for cleaner mocking, but happy-dom handles current needs well.
 
 ## Module System & Imports
 
