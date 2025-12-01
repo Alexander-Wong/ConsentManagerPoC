@@ -19,10 +19,13 @@
     "release:minor": "npm run release minor",
     "release:major": "npm run release major",
     "release": "sh ./release.sh",
-    "changelog:init": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "changelog:preview": "conventional-changelog -p angular",
+    "changelog:update": "conventional-changelog -p custom -i CHANGELOG.md -s -r 0",
     "version:show": "node -p \"require('./package.json').version\""
+  },
+  "config": {
+    "conventional-changelog": {
+      "preset": "./changelog.config.js"
+    }
   },
   "keywords": [
     "consent",
