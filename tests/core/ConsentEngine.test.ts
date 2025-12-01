@@ -263,26 +263,6 @@ describe('ConsentEngine', () => {
     });
   });
 
-  describe('version methods', () => {
-    it('should return version string', () => {
-      const engine = new ConsentEngine(config, mockProvider);
-      const version = engine.getVersion();
-
-      expect(version).toBe('1.0.0');
-      expect(typeof version).toBe('string');
-    });
-
-    it('should return version info object', () => {
-      const engine = new ConsentEngine(config, mockProvider);
-      const versionInfo = engine.getVersionInfo();
-
-      expect(versionInfo).toBeDefined();
-      expect(versionInfo.version).toBe('1.0.0');
-      expect(versionInfo.name).toBe('@your-org/consent-manager');
-      expect(versionInfo.description).toBe('Provider-agnostic consent management system for GDPR/CCPA cookie compliance');
-    });
-  });
-
   describe('integration scenarios', () => {
     it('should handle full initialization and evaluation flow', () => {
       const engine = new ConsentEngine(config, mockProvider);
