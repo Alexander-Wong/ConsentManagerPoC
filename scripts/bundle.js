@@ -20,7 +20,7 @@ async function bundle() {
         const configPath = path.join(__dirname, './esbuild.config.js');
         console.log(`🔧 Loading build config from: ${configPath}`);
         const configModule = await import(configPath);
-        const { esbuildConfig, outputPath, version, productName } = configModule;
+        const { esbuildConfig, outputPath, bundlesPath, version, productName } = configModule;
 
         console.log('\n📦 Building ConsentManager Bundle...\n');
         console.log(`   Product: ${productName}`);
@@ -53,6 +53,27 @@ async function bundle() {
         }
 
         console.log(`✅ Bundle complete: ${productName}-${version}.min.js\n`);
+
+        // Copy bundle from dist/ to bundles/{version}/
+        const versionedBundleDir = path.join(bundlesPath, version);
+        if (!fs.existsSync(versionedBundleDir)) {
+            fs.mkdirSync(versionedBundleDir, { recursive: true });
+            console.log(`✓ Created bundles directory: ${versionedBundleDir}`);
+        }
+
+        const bundleDestination = path.join(versionedBundleDir, `${productName}-${version}.min.js`);
+        fs.copyFileSync(outputPath, bundleDestination);
+        console.log(`✓ Bundle copied to: ${bundleDestination}`);
+
+        // Also copy to bundles/latest/ for easy access
+        const latestBundleDir = path.join(bundlesPath, 'latest');
+        if (!fs.existsSync(latestBundleDir)) {
+            fs.mkdirSync(latestBundleDir, { recursive: true });
+        }
+        const latestDestination = path.join(latestBundleDir, `${productName}.min.js`);
+        fs.copyFileSync(outputPath, latestDestination);
+        console.log(`✓ Latest bundle updated: ${latestDestination}\n`);
+
         process.exit(0);
 
     } catch (error) {

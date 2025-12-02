@@ -19,6 +19,7 @@ const productName = 'consent-manager';
 // Output filename with version
 const outputFilename = `${productName}-${version}.min.js`;
 const outputPath = path.join(projectRoot, 'dist', outputFilename);
+const bundlesPath = path.join(projectRoot, 'bundles/');
 
 const esbuildConfig = {
   entryPoints: [path.join(projectRoot, 'src/ConsentWrapper.ts')],
@@ -43,4 +44,10 @@ const esbuildConfig = {
   },
 };
 
-export { esbuildConfig, outputPath, version, productName };
+export {
+  esbuildConfig,
+  outputPath,
+  bundlesPath,
+  version,
+  productName
+};

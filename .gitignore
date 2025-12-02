@@ -1,8 +1,11 @@
 # Dependencias
 node_modules/
 
-# Build de producción
+# Build de producción (temporary build artifacts)
 dist/
+
+# Bundles directory is tracked in git (versioned releases)
+# bundles/ <- NOT ignored, we want to track these
 
 # Opcionalmente puedes añadir:
 .env
