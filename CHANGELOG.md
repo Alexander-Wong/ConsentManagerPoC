@@ -1,5 +1,11 @@
+## 1.2.0 (2025-12-02)
+
+
+
+
 ## 1.1.0 (2025-12-02)
 
+* adding support to generate bundle ([180792b](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/180792b))
 * recovering engine config ([5e4b5af](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/5e4b5af))
 * removing log change ([b0c42fb](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/b0c42fb))
 * updatin package ([771e75b](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/771e75b))
