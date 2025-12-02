@@ -1,4 +1,13 @@
+# [1.3.0](https://github.com/Alexander-Wong/ConsentManagerPoC/compare/v1.2.2...v1.3.0) (2025-12-02)
+
+
+
 ## [1.2.2](https://github.com/Alexander-Wong/ConsentManagerPoC/compare/v1.2.1...v1.2.2) (2025-12-02)
+
+
+### Bug Fixes
+
+* Removing changelog config file ([fb14f2a](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/fb14f2ac34945c026430d978c2a330926c8cb90f))
 
 
 
