@@ -1,4 +1,13 @@
+## [1.3.1](https://github.com/Alexander-Wong/ConsentManagerPoC/compare/v1.3.0...v1.3.1) (2025-12-02)
+
+
+
 # [1.3.0](https://github.com/Alexander-Wong/ConsentManagerPoC/compare/v1.2.2...v1.3.0) (2025-12-02)
+
+
+### Features
+
+* Updating engine config ([b134ba9](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/b134ba9b54b597a923154195475ee41a03d7a5ba))
 
 
 
