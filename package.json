@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "build:bundle": "node ./scripts/bundle.js",
+    "build:bundle": "node ./generator/bundle.js",
     "dev": "nodemon server.js",
     "test": "vitest",
     "test:ui": "vitest --ui",
