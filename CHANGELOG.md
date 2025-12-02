@@ -1,5 +1,11 @@
+## <small>1.2.1 (2025-12-02)</small>
+
+
+
+
 ## 1.2.0 (2025-12-02)
 
+* updating engine config ([a2a1b45](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/a2a1b45))
 
 
 
