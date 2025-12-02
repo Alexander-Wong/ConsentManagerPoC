@@ -24,9 +24,47 @@ git stash -q --keep-index
 
 STASHED=true
 
+# Determine commit type based on version type
+case $VERSION_TYPE in
+  major)
+    COMMIT_TYPE="feat"
+    COMMIT_PREFIX="feat!:"
+    echo "🚀 MAJOR release - Breaking changes"
+    ;;
+  minor)
+    COMMIT_TYPE="feat"
+    COMMIT_PREFIX="feat:"
+    echo "✨ MINOR release - New features"
+    ;;
+  patch)
+    COMMIT_TYPE="fix"
+    COMMIT_PREFIX="fix:"
+    echo "🐛 PATCH release - Bug fixes"
+    ;;
+  *)
+    echo "❌ Invalid version type"
+    exit 1
+    ;;
+esac
+
 # Ask developer for the commit message
-echo "📝 Enter your release commit message:"
-read COMMIT_MSG
+echo ""
+echo "📝 Enter your release commit description (without type prefix):"
+echo "   Example: add user authentication feature"
+echo "   Will be formatted as: $COMMIT_PREFIX <your description>"
+echo ""
+read -p "Description: " COMMIT_DESC
+
+# Validate commit description
+if [ -z "$COMMIT_DESC" ]; then
+  echo "❌ Commit description cannot be empty"
+  exit 1
+fi
+
+# Build the full commit message
+COMMIT_MSG="$COMMIT_PREFIX $COMMIT_DESC"
+echo ""
+echo "📋 Commit message will be: $COMMIT_MSG"
 
 # Run tests and build
 echo "🧪 Running tests..."
