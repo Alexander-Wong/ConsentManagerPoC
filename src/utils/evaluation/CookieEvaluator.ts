@@ -4,7 +4,7 @@ import { CookieConditionalType } from "../../types/CookieConditionalType.js";
 type CookieEvaluator<T> = (source: T[], target: T[]) => boolean;
 
 export class ConditionalEval {
-  private static evaluators: Record<CookieConditionalType, CookieEvaluator<any>> = {
+  private static evaluators: Record<CookieConditionalType, CookieEvaluator<unknown>> = {
     [CookieConditionalType.AND]: <T>(source: T[], target: T[]): boolean => {
       if (source.length === 0) return true;
       return source.every(item => target.includes(item));

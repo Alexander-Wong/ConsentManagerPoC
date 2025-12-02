@@ -15,8 +15,6 @@ interface OnetrustAPI {
   IsAlertBoxClosed(): boolean;
 }
 
-// Import the explicit ActiveCookies type
-import { ActiveCookies } from "./src/types/ActiveCookies.js";
 
 // Global Window interface extension
 declare global {

@@ -1,7 +1,4 @@
-interface CookieCategory {
-  src?: string;
-  code?: string;
-}
+import { CookieCategory } from "../../types/CookieCategory";
 
 class Defer {
   private scripts: CookieCategory[] = [];
@@ -12,7 +9,7 @@ class Defer {
       const parmas = hostScript.getAttribute("data-scripts");
       if (parmas) {
         try {
-          this.scripts = JSON.parse(parmas); // ← leer JSON del atributo
+          this.scripts = JSON.parse(parmas) as CookieCategory[]; 
           this.loadScripts();
         } catch (e) {
           console.error("❌ Invalid JSON data-scripts format", e);

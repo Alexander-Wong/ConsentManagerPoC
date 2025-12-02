@@ -11,6 +11,7 @@ export class NoOpLogger implements ILogger {
   /**
    * Does nothing - silently discards the message.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   log(_namespace: string, _message: string): void {
     // Intentionally empty - no-op logger
   }
@@ -18,6 +19,7 @@ export class NoOpLogger implements ILogger {
   /**
    * Does nothing - silently discards the message.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   warn(_namespace: string, _message: string): void {
     // Intentionally empty - no-op logger
   }
@@ -25,6 +27,7 @@ export class NoOpLogger implements ILogger {
   /**
    * Does nothing - silently discards the message and error.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   error(_namespace: string, _message: string, _error?: unknown): void {
     // Intentionally empty - no-op logger
   }

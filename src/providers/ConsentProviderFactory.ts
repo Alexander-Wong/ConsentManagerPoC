@@ -42,7 +42,7 @@ export class ConsentProviderFactory {
         }
 
       default:
-        throw new Error(`[ConsentProviderFactory] Unsupported provider type: ${factoryConfig.type}`);
+        throw new Error(`[ConsentProviderFactory] Unsupported provider type: ${String(factoryConfig.type)}`);
     }
   }
 }
