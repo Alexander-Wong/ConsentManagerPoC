@@ -3,6 +3,7 @@ node_modules/
 
 # Build de producción (temporary build artifacts)
 dist/
+coverage/
 
 # Bundles directory is tracked in git (versioned releases)
 # bundles/ <- NOT ignored, we want to track these

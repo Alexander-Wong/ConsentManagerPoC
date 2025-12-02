@@ -144,6 +144,32 @@ describe('ScriptInjectionService', () => {
       expect(script?.textContent).toBe('inline();');
       expect(script?.src).toContain('https://example.com/external.js');
     });
+
+    it('should handle missing document.head gracefully', () => {
+      const originalHead = document.head;
+
+      // Mock document.head as null
+      Object.defineProperty(document, 'head', {
+        value: null,
+        configurable: true,
+        writable: true
+      });
+
+      const category = {
+        cookies: [CookieType.C0001],
+        cookieNames: [],
+        code: 'test();'
+      };
+
+      expect(() => service.injectCategoryScript(category as any)).not.toThrow();
+
+      // Restore document.head
+      Object.defineProperty(document, 'head', {
+        value: originalHead,
+        configurable: true,
+        writable: true
+      });
+    });
   });
 
   describe('injectAllCategoryScripts', () => {
@@ -206,6 +232,18 @@ describe('ScriptInjectionService', () => {
       });
 
       expect(() => service.injectProviderScript()).not.toThrow();
+    });
+
+    it('should handle null provider', () => {
+      const serviceWithNullProvider = new ScriptInjectionService(null as any);
+
+      expect(() => serviceWithNullProvider.injectProviderScript()).not.toThrow();
+    });
+
+    it('should handle undefined provider', () => {
+      const serviceWithUndefinedProvider = new ScriptInjectionService(undefined as any);
+
+      expect(() => serviceWithUndefinedProvider.injectProviderScript()).not.toThrow();
     });
   });
 });

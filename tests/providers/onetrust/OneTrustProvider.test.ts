@@ -175,6 +175,26 @@ describe('OneTrustProvider', () => {
       const scripts = document.head.querySelectorAll('script');
       expect(scripts.length).toBe(0);
     });
+
+    it('should handle missing document.head gracefully', () => {
+      const originalHead = document.head;
+
+      // Mock document.head as null
+      Object.defineProperty(document, 'head', {
+        value: null,
+        configurable: true,
+        writable: true
+      });
+
+      expect(() => provider.injectProviderScript()).not.toThrow();
+
+      // Restore document.head
+      Object.defineProperty(document, 'head', {
+        value: originalHead,
+        configurable: true,
+        writable: true
+      });
+    });
   });
 
   describe('getConsentCategoryClass', () => {

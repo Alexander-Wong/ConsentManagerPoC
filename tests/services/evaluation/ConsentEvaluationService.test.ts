@@ -3,6 +3,7 @@ import { ConsentEvaluationService } from '../../../src/services/evaluation/Conse
 import { CookieManagementService } from '../../../src/services/cookies/CookieManagementService.js';
 import { CookieType } from '../../../src/types/CookieType.js';
 import { CookieConditionalType } from '../../../src/types/CookieConditionalType.js';
+import { ConditionalEval } from '../../../src/utils/evaluation/CookieEvaluator.js';
 
 describe('ConsentEvaluationService', () => {
   let service: ConsentEvaluationService;
@@ -96,6 +97,66 @@ describe('ConsentEvaluationService', () => {
 
       expect(deleteSpy).not.toHaveBeenCalled();
     });
+
+    it('should handle non-array categories parameter', () => {
+      const deleteSpy = vi.spyOn(mockCookieService, 'deleteCookies');
+
+      // Pass an object instead of an array
+      service.evaluateCookieConsents({} as any, [CookieType.C0001]);
+
+      expect(deleteSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle non-array activeCookies parameter', () => {
+      const deleteSpy = vi.spyOn(mockCookieService, 'deleteCookies');
+
+      const categories = [{
+        cookies: [CookieType.C0002],
+        cookieNames: ['test']
+      }];
+
+      // Pass an object instead of an array
+      service.evaluateCookieConsents(categories as any, {} as any);
+
+      expect(deleteSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle category without cookies property', () => {
+      const deleteSpy = vi.spyOn(mockCookieService, 'deleteCookies');
+
+      const categories = [{ cookieNames: ['test'] }]; // missing cookies property
+
+      service.evaluateCookieConsents(categories as any, [CookieType.C0001]);
+
+      expect(deleteSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle category without cookieNames property', () => {
+      const deleteSpy = vi.spyOn(mockCookieService, 'deleteCookies');
+
+      const categories = [{ cookies: [CookieType.C0001] }]; // missing cookieNames property
+
+      service.evaluateCookieConsents(categories as any, [CookieType.C0001]);
+
+      expect(deleteSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors during category evaluation', () => {
+      const deleteSpy = vi.spyOn(mockCookieService, 'deleteCookies');
+      const evalSpy = vi.spyOn(ConditionalEval, 'eval').mockImplementation(() => {
+        throw new Error('Evaluation failed');
+      });
+
+      const categories = [{
+        cookies: [CookieType.C0001],
+        cookieNames: ['test']
+      }];
+
+      expect(() => service.evaluateCookieConsents(categories as any, [CookieType.C0001])).not.toThrow();
+      expect(deleteSpy).not.toHaveBeenCalled();
+
+      evalSpy.mockRestore();
+    });
   });
 
   describe('hasActiveConsent', () => {
@@ -141,6 +202,31 @@ describe('ConsentEvaluationService', () => {
         [CookieType.C0001]
       );
       expect(result).toBe(true);
+    });
+
+    it('should handle non-array activeCookies in hasActiveConsent', () => {
+      const result = service.hasActiveConsent(
+        [CookieType.C0001],
+        {} as any,
+        CookieConditionalType.AND
+      );
+      expect(result).toBe(false);
+    });
+
+    it('should handle errors in hasActiveConsent evaluation', () => {
+      const evalSpy = vi.spyOn(ConditionalEval, 'eval').mockImplementation(() => {
+        throw new Error('Evaluation error');
+      });
+
+      const result = service.hasActiveConsent(
+        [CookieType.C0001],
+        [CookieType.C0001],
+        CookieConditionalType.AND
+      );
+
+      expect(result).toBe(false);
+
+      evalSpy.mockRestore();
     });
   });
 });

@@ -62,6 +62,20 @@ describe('CookieManagementService', () => {
 
       expect(service.hasCookie('cookie1')).toBe(false);
     });
+
+    it('should handle non-array names parameter', () => {
+      document.cookie = 'cookie1=value1; Path=/';
+
+      // Pass an object instead of an array
+      expect(() => service.deleteCookies({} as any)).not.toThrow();
+
+      // Cookie should still exist
+      expect(service.hasCookie('cookie1')).toBe(true);
+    });
+
+    it('should handle null names parameter', () => {
+      expect(() => service.deleteCookies(null as any)).not.toThrow();
+    });
   });
 
   describe('getCookie', () => {
@@ -82,6 +96,16 @@ describe('CookieManagementService', () => {
       const value = service.getCookie('empty_cookie');
       // happy-dom may return null for empty cookies
       expect(value === '' || value === null).toBe(true);
+    });
+
+    it('should handle non-string name parameter', () => {
+      const value = service.getCookie(123 as any);
+      expect(value).toBeNull();
+    });
+
+    it('should handle null name parameter', () => {
+      const value = service.getCookie(null as any);
+      expect(value).toBeNull();
     });
   });
 
