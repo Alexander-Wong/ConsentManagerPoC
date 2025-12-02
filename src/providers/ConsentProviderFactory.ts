@@ -2,7 +2,6 @@ import { IConsentProvider } from './IConsentProvider.js';
 import { OneTrustProvider } from './onetrust/OneTrustProvider.js';
 import { ProviderFactoryConfig } from './IProviderFactoryConfig.js';
 import { ProviderType } from './ProviderType.js';
-import { IProviderConfig } from './IProviderConfig.js';
 
 
 /**
@@ -12,11 +11,6 @@ import { IProviderConfig } from './IProviderConfig.js';
 export class ConsentProviderFactory {
   /**
    * Creates a consent provider instance based on configuration.
-   *
-   * @param factoryConfig - Configuration specifying provider type and settings
-   * @returns Configured consent provider instance
-   * @throws Error if provider type is unsupported
-   *
    */
   static createProvider(factoryConfig: ProviderFactoryConfig): IConsentProvider {
     if (!factoryConfig) {
@@ -33,17 +27,19 @@ export class ConsentProviderFactory {
 
     switch (factoryConfig.type) {
       case ProviderType.ONETRUST:
-        const config = factoryConfig.config as IProviderConfig;
+        { 
+          const config = factoryConfig.config;
 
-        if (!config.scriptUrl || typeof config.scriptUrl !== 'string') {
-          throw new Error('[ConsentProviderFactory] OneTrust scriptUrl is required');
+          if (!config.scriptUrl || typeof config.scriptUrl !== 'string') {
+            throw new Error('[ConsentProviderFactory] OneTrust scriptUrl is required');
+          }
+
+          if (!config.domainScript || typeof config.domainScript !== 'string') {
+            throw new Error('[ConsentProviderFactory] OneTrust domainScript is required');
+          }
+
+          return new OneTrustProvider(config); 
         }
-
-        if (!config.domainScript || typeof config.domainScript !== 'string') {
-          throw new Error('[ConsentProviderFactory] OneTrust domainScript is required');
-        }
-
-        return new OneTrustProvider(config);
 
       default:
         throw new Error(`[ConsentProviderFactory] Unsupported provider type: ${factoryConfig.type}`);

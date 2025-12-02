@@ -12,6 +12,8 @@
     "build": "npx tsc",
     "build:bundle": "node ./generator/bundle.js",
     "dev": "nodemon server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
@@ -40,12 +42,16 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/eslint__js": "^8.42.3",
     "@types/node": "^24.10.1",
     "@vitest/coverage-v8": "^4.0.14",
     "@vitest/ui": "^4.0.14",
     "conventional-changelog-cli": "^5.0.0",
     "esbuild": "^0.27.0",
+    "eslint": "^9.39.1",
     "happy-dom": "^20.0.11",
+    "typescript-eslint": "^8.48.1",
     "vitest": "^4.0.14"
   }
 }

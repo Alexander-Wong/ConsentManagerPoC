@@ -16,7 +16,8 @@
       "Bash(npx conventional-changelog:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []
