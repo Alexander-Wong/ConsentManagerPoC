@@ -1,8 +1,10 @@
-## <small>1.0.1 (2025-12-01)</small>
+## 1.1.0 (2025-12-02)
 
+* recovering engine config ([5e4b5af](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/5e4b5af))
 * removing log change ([b0c42fb](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/b0c42fb))
 * updatin package ([771e75b](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/771e75b))
 * updatin package ([86e8890](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/86e8890))
+* Updating configuration for changelog ([ab324e6](https://github.com/Alexander-Wong/ConsentManagerPoC/commit/ab324e6))
 
 
 
