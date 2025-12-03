@@ -66,9 +66,13 @@ COMMIT_MSG="$COMMIT_PREFIX $COMMIT_DESC"
 echo ""
 echo "📋 Commit message will be: $COMMIT_MSG"
 
-# Run tests and build
-echo "🧪 Running tests..."
+# Run tests
+echo "🧪 Running unit tests..."
 npm test
+
+# Run ESLint
+echo "🔍 Running ESLint..."
+npm run lint
 
 echo "🏗️ Building project..."
 npm run build
