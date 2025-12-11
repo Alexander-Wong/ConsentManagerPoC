@@ -1,8 +1,8 @@
+import { ActiveCookies } from "../types/ActiveCookies.js";
 import { CookieConditionalType } from "../types/CookieConditionalType.js";
-import { ConditionalEval } from "../utils/evaluation/CookieEvaluator.js";
 import { CookieType } from "../types/CookieType.js";
 import { ResourceType } from "../types/ResourceType.js";
-import { ActiveCookies } from "../types/ActiveCookies.js";
+import { ConditionalEval } from "../utils/evaluation/CookieEvaluator.js";
 
 export class BaseResource {
   resourceType: ResourceType;

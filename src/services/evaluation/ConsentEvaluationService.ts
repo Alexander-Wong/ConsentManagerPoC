@@ -1,8 +1,8 @@
-import { CookieCategory } from "../../types/CookieCategory.js";
-import { ConditionalEval } from "../../utils/evaluation/CookieEvaluator.js";
-import { CookieConditionalType } from "../../types/CookieConditionalType.js";
-import { CookieManagementService } from "../cookies/CookieManagementService.js";
 import { ActiveCookies } from "../../types/ActiveCookies.js";
+import { CookieCategory } from "../../types/CookieCategory.js";
+import { CookieConditionalType } from "../../types/CookieConditionalType.js";
+import { ConditionalEval } from "../../utils/evaluation/CookieEvaluator.js";
+import { CookieManagementService } from "../cookies/CookieManagementService.js";
 
 /**
  * Service responsible for evaluating consent conditions and taking action.
@@ -47,8 +47,9 @@ export class ConsentEvaluationService {
         if (!isActive && category.cookieNames.length > 0) {
           this.cookieService.deleteCookies(category.cookieNames);
         }
-      } catch (error) {
-        console.error('[ConsentEvaluationService] Failed to evaluate category:', error);
+      } catch (error : unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('[ConsentEvaluationService] Failed to evaluate category:', message);
       }
     });
   }
@@ -73,8 +74,9 @@ export class ConsentEvaluationService {
 
     try {
       return ConditionalEval.eval(requiredCookies, activeCookies, condition);
-    } catch (error) {
-      console.error('[ConsentEvaluationService] Failed to check active consent:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[ConsentEvaluationService] Failed to check active consent:', message);
       return false;
     }
   }

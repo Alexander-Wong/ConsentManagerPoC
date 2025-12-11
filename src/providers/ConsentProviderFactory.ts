@@ -1,7 +1,10 @@
+import { ProviderType } from '../types/ProviderType.js';
 import { IConsentProvider } from './IConsentProvider.js';
+import { IMockProviderConfig } from './IMockProviderConfig.js';
+import { IOneTrustProviderConfig } from './IOneTrustProviderConfig.js';
+import { IProviderFactoryConfig } from './IProviderFactoryConfig.js';
+import { MockProvider } from './mock/MockProvider.js';
 import { OneTrustProvider } from './onetrust/OneTrustProvider.js';
-import { ProviderFactoryConfig } from './IProviderFactoryConfig.js';
-import { ProviderType } from './ProviderType.js';
 
 
 /**
@@ -12,7 +15,7 @@ export class ConsentProviderFactory {
   /**
    * Creates a consent provider instance based on configuration.
    */
-  static createProvider(factoryConfig: ProviderFactoryConfig): IConsentProvider {
+  static createProvider(factoryConfig: IProviderFactoryConfig): IConsentProvider {
     if (!factoryConfig) {
       throw new Error('[ConsentProviderFactory] Factory config is required');
     }
@@ -28,7 +31,7 @@ export class ConsentProviderFactory {
     switch (factoryConfig.type) {
       case ProviderType.ONETRUST:
         { 
-          const config = factoryConfig.config;
+          const config = factoryConfig.config as IOneTrustProviderConfig
 
           if (!config.scriptUrl || typeof config.scriptUrl !== 'string') {
             throw new Error('[ConsentProviderFactory] OneTrust scriptUrl is required');
@@ -40,7 +43,16 @@ export class ConsentProviderFactory {
 
           return new OneTrustProvider(config); 
         }
+      case ProviderType.MOCK:
+        {
+          const config = factoryConfig.config as IMockProviderConfig;
 
+          if (!config.scriptUrl || typeof config.scriptUrl !== 'string') {
+            throw new Error('[ConsentProviderFactory] Mock scriptUrl is required');
+          }
+
+          return new MockProvider(config);
+        }
       default:
         throw new Error(`[ConsentProviderFactory] Unsupported provider type: ${String(factoryConfig.type)}`);
     }

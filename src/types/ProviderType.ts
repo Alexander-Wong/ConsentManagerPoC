@@ -2,5 +2,6 @@
  * Supported consent management provider types
  */
 export enum ProviderType {
-  ONETRUST = 'onetrust'
+  ONETRUST = 'onetrust',
+  MOCK = 'mock'
 }

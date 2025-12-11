@@ -2,10 +2,20 @@
 
 A sophisticated Cookie Consent Management System with a **provider-agnostic architecture** that supports multiple consent platforms (OneTrust, Cookiebot, custom implementations). This proof of concept dynamically controls script execution and UI resource visibility based on user consent preferences while maintaining GDPR/CCPA compliance.
 
+## Current Version: 1.0.0
+
+- **Bundle Size:** 21.31 KB (minified ESM)
+- **Format:** ES Module (ESM)
+- **Target:** ES2020
+- **Runtime Exports:** 17 objects available for import
+- **Test Coverage:** 252 passing tests
+
 ## Features
 
 - ✅ **Provider-Agnostic Architecture** - Factory pattern supports OneTrust, Cookiebot, or custom providers
 - ✅ **Multi-Provider Support** - Easily switch between consent management platforms
+- ✅ **Flexible Configuration API** - Supports Plain JSON, Class-based, or URL-based configuration
+- ✅ **ES Module Bundle** - Import directly in browser with 17 runtime exports
 - ✅ **Dynamic Script Injection** - Load scripts only when user consents to their category
 - ✅ **Sequential Script Loading** - Guarantee execution order for dependent scripts (e.g., Adobe Launch)
 - ✅ **Cookie Lifecycle Management** - Automatically delete cookies when consent is withdrawn
@@ -109,14 +119,51 @@ ConsentManagerPoC/
 - **ES Modules (ESNext)** - Modern JavaScript module system
 - **Target:** ES2020
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
+### Browser Integration (ES Module)
 
-- Node.js (v14 or higher recommended)
-- npm or yarn
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="module">
+    import {
+      initConsentManager,
+      ProviderType,
+      ProviderConfigs
+    } from './bundles/latest/consent-manager.esm.min.js';
 
-### Installation
+    // Plain JSON configuration
+    await initConsentManager({
+      provider: {
+        type: ProviderType.ONETRUST,
+        config: ProviderConfigs.oneTrust({
+          scriptUrl: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js',
+          domainScript: 'your-domain-script-id'
+        })
+      },
+      config: {
+        cookieCategories: [
+          {
+            cookies: ['C0001'],
+            cookieNames: ['session_cookie'],
+            code: 'document.cookie = "session_cookie=1; Path=/";'
+          }
+        ],
+        resources: []
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>My Site</h1>
+  <button onclick="showProviderBanner()">Manage Cookies</button>
+</body>
+</html>
+```
+
+### Installation & Development
 
 ```bash
 # Clone the repository
@@ -125,35 +172,136 @@ cd ConsentManagerPoC
 
 # Install dependencies
 npm install
-```
 
-### Build
+# Build ES Module bundle
+npm run build:bundle
 
-```bash
-# Compile TypeScript to JavaScript
-npm run tsc
-```
-
-This compiles all `.ts` files from `src/` to `.js` files in `dist/`.
-
-### Development
-
-```bash
-# Run development server with auto-reload
+# Run development server
 npm run dev
+# Visit http://localhost:3000
 ```
 
-The server will start at `http://localhost:3000` and automatically reload on file changes.
-
-### Production
+### Available Commands
 
 ```bash
-# Build the project
-npm run tsc
-
-# Start production server
-npm start
+npm run build            # Compile TypeScript
+npm run build:bundle     # Build ESM bundle (21.31 KB)
+npm run dev              # Development server with auto-reload
+npm run test             # Run all 252 tests
+npm run lint             # Check code quality
+npm run lint:fix         # Auto-fix linting issues
+npm run release:patch    # Release patch version (1.0.0 → 1.0.1)
+npm run release:minor    # Release minor version (1.0.0 → 1.1.0)
+npm run release:major    # Release major version (1.0.0 → 2.0.0)
 ```
+
+## Configuration Approaches
+
+The Consent Manager supports three flexible configuration methods:
+
+### 1. Plain JSON Configuration (Recommended for Simple Use Cases)
+
+```javascript
+import { initConsentManager, ProviderType, ProviderConfigs } from './bundles/latest/consent-manager.esm.min.js';
+
+await initConsentManager({
+  provider: {
+    type: ProviderType.ONETRUST,
+    config: ProviderConfigs.oneTrust({
+      scriptUrl: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js',
+      domainScript: 'your-domain-script-id'
+    })
+  },
+  config: {
+    cookieCategories: [
+      {
+        cookies: ['C0001'],
+        cookieNames: ['session_cookie'],
+        code: 'document.cookie = "session_cookie=1";'
+      }
+    ],
+    resources: []
+  }
+});
+```
+
+### 2. Class-Based Configuration (Recommended for Advanced Use Cases)
+
+```javascript
+import {
+  initConsentManager,
+  ProviderType,
+  ProviderConfigs,
+  ConsentEngineConfig,
+  CookieCategory,
+  BaseResource,
+  CookieType,
+  ResourceType,
+  CookieConditionalType
+} from './bundles/latest/consent-manager.esm.min.js';
+
+const config = new ConsentEngineConfig({
+  cookieCategories: [
+    new CookieCategory({
+      cookies: [CookieType.C0001],
+      cookieNames: ['session_cookie'],
+      code: 'document.cookie = "session_cookie=1";'
+    })
+  ],
+  resources: [
+    new BaseResource({
+      resourceType: ResourceType.Video,
+      cookies: [CookieType.C0004],
+      condition: CookieConditionalType.AND
+    })
+  ]
+});
+
+await initConsentManager({
+  provider: {
+    type: ProviderType.ONETRUST,
+    config: ProviderConfigs.oneTrust({ /* ... */ })
+  },
+  config: config
+});
+```
+
+### 3. URL-Based Configuration (Recommended for Remote Configs)
+
+```javascript
+await initConsentManager({
+  provider: {
+    type: ProviderType.ONETRUST,
+    config: ProviderConfigs.oneTrust({ /* ... */ })
+  },
+  configUrl: '/config/consent-config.json'
+});
+```
+
+## Available Exports
+
+The bundle exports 17 runtime objects:
+
+| Export | Type | Description |
+|--------|------|-------------|
+| `initConsentManager` | Function | Main initialization function |
+| `ProviderConfigs` | Object | Factory for provider configurations |
+| `ProviderType` | Enum | Provider types (ONETRUST, MOCK) |
+| `CookieType` | Enum | Cookie categories (C0001-C0004) |
+| `ResourceType` | Enum | Resource types (Map, Video, Kaltura) |
+| `CookieConditionalType` | Enum | Conditional logic (AND, OR) |
+| `ConsentEngineConfig` | Class | Configuration container |
+| `CookieCategory` | Class | Cookie category definition |
+| `BaseResource` | Class | UI resource definition |
+| `ConsentConfigJson` | Class | JSON configuration class |
+| `CookieCategoryJson` | Class | JSON cookie category class |
+| `ResourceJson` | Class | JSON resource class |
+| **Service Classes** | | For advanced usage |
+| `ConfigLoaderService` | Class | Load configs from JSON/URL |
+| `CookieManagementService` | Class | Cookie deletion management |
+| `ConsentEvaluationService` | Class | Consent evaluation logic |
+| `ResourceVisibilityService` | Class | UI resource visibility |
+| `ScriptInjectionService` | Class | Script injection management |
 
 ## Cookie Categories
 
@@ -376,63 +524,124 @@ ConsentConfig.addResource(
 9. Back to Step 5 (Re-evaluate)
 ```
 
+## Bundle Versioning
+
+The project uses semantic versioning with a dual-path bundle strategy:
+
+```
+bundles/
+├── latest/                           # Always points to current version
+│   └── consent-manager.esm.min.js   # Unversioned filename
+└── 1.0.0/                            # Version 1.0.0
+    └── consent-manager-1.0.0.esm.min.js
+```
+
+**Usage Options:**
+
+```javascript
+// Latest version (auto-updating)
+import { initConsentManager } from './bundles/latest/consent-manager.esm.min.js';
+
+// Locked version (stable, recommended for production)
+import { initConsentManager } from './bundles/1.0.0/consent-manager-1.0.0.esm.min.js';
+```
+
+**Release Commands:**
+
+```bash
+npm run release:patch    # 1.0.0 → 1.0.1 (bug fixes)
+npm run release:minor    # 1.0.0 → 1.1.0 (new features)
+npm run release:major    # 1.0.0 → 2.0.0 (breaking changes)
+```
+
+See [RELEASE.md](RELEASE.md) for complete versioning documentation.
+
 ## Usage Examples
 
-### Basic Integration
+### Complete HTML Integration
+
+See [public/index.html](public/index.html) for a working example with OneTrust integration.
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Site</title>
-  <!-- Import the consent manager -->
-  <script type="module" src="dist/OneTrustWrapper.js"></script>
+  <script type="module">
+    import {
+      initConsentManager,
+      ProviderType,
+      ProviderConfigs,
+      CookieType,
+      ResourceType,
+      CookieConditionalType,
+      ConsentEngineConfig,
+      CookieCategory,
+      BaseResource
+    } from './bundles/latest/consent-manager.esm.min.js';
+
+    const config = new ConsentEngineConfig({
+      cookieCategories: [
+        new CookieCategory({
+          cookies: [CookieType.C0004],
+          cookieNames: ['adv_cookie'],
+          code: 'document.cookie = "adv_cookie=1; Path=/; Secure;";'
+        })
+      ],
+      resources: [
+        new BaseResource({
+          resourceType: ResourceType.Video,
+          cookies: [CookieType.C0004],
+          condition: CookieConditionalType.AND
+        })
+      ]
+    });
+
+    await initConsentManager({
+      provider: {
+        type: ProviderType.ONETRUST,
+        config: ProviderConfigs.oneTrust({
+          scriptUrl: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js',
+          domainScript: 'your-domain-script-id',
+          documentLanguage: true
+        })
+      },
+      config: config
+    });
+  </script>
 </head>
 <body>
   <h1>Welcome</h1>
 
-  <!-- Video that requires functionality consent -->
-  <div videoTag class="overlay">
-    Accept functionality cookies to view this video.
+  <!-- Video that requires advertising consent -->
+  <div class="iframe-wrapper">
+    <iframe src="https://www.youtube.com/embed/VIDEO_ID"></iframe>
+    <div videoTag class="overlay">Accept advertising cookies to view this video.</div>
   </div>
 
-  <button onclick="showOneTrustBanner()">Manage Cookies</button>
+  <button onclick="showProviderBanner()">Manage Cookies</button>
 </body>
 </html>
 ```
 
-### Programmatic Consent Check
+### Sequential Script Loading (Adobe Launch)
 
-```typescript
-import { ConsentEngine } from './ConsentEngine';
-import { ConsentConfig } from './ConsentConfig';
-
-const engine = new ConsentEngine(ConsentConfig);
-const activeCookies = engine.getCookiesState();
-
-if (activeCookies.includes('C0004')) {
-  console.log('Advertising cookies are active');
-  // Load advertising scripts
-}
-```
-
-### Adding a New Script
-
-```typescript
-// In ConsentConfig.ts
-ConsentConfig.addCookieCategory({
-  cookies: [CookieType.C0002],  // Performance category
-  script: [
-    {
-      name: 'google_analytics',
-      attributes: {
-        src: 'https://www.google-analytics.com/analytics.js',
-        async: true
-      }
-    }
-  ],
-  cookiesToDelete: ['_ga', '_gat', '_gid']
-});
+```javascript
+new CookieCategory({
+  cookies: [CookieType.C0004],
+  cookieNames: [],
+  defer: [
+    new CookieCategory({
+      cookies: [],
+      cookieNames: [],
+      src: "//assets.adobedtm.com/launch.min.js"  // Loads first
+    }),
+    new CookieCategory({
+      cookies: [],
+      cookieNames: [],
+      code: "window._satellite.pageBottom();"  // Runs after
+    })
+  ]
+})
 ```
 
 ## API Reference

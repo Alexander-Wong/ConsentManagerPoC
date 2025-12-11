@@ -5,10 +5,20 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "moduleResolution": "node",
-    "strict": true
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*.ts",
     "global.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests",
+    "coverage"
   ]
 }

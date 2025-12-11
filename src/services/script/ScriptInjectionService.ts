@@ -1,5 +1,5 @@
-import { CookieCategory } from "../../types/CookieCategory.js";
 import { IConsentProvider } from "../../providers/IConsentProvider.js";
+import { CookieCategory } from "../../types/CookieCategory.js";
 
 /**
  * Service responsible for script injection and management.
@@ -61,8 +61,9 @@ export class ScriptInjectionService {
       }
 
       document.head.appendChild(script);
-    } catch (error) {
-      console.error('[ScriptInjectionService] Failed to inject category script:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[ScriptInjectionService] Failed to inject category script:', message);
     }
   }
 
@@ -98,8 +99,9 @@ export class ScriptInjectionService {
       if (this.provider.initialize && typeof this.provider.initialize === 'function') {
         this.provider.initialize();
       }
-    } catch (error) {
-      console.error('[ScriptInjectionService] Failed to inject provider script:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[ScriptInjectionService] Failed to inject provider script:', message);
     }
   }
 }

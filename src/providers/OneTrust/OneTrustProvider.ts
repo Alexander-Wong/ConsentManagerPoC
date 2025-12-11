@@ -1,6 +1,7 @@
+import { ProviderType } from '../../types/ProviderType.js';
 import { IConsentProvider } from '../IConsentProvider.js';
-import { IProviderConfig } from '../IProviderConfig.js';
-import { ProviderType } from '../ProviderType.js';
+import { IOneTrustProviderConfig } from '../IOneTrustProviderConfig.js';
+
 
 
 /**
@@ -8,10 +9,10 @@ import { ProviderType } from '../ProviderType.js';
  * Encapsulates all OneTrust-specific logic and global variable access.
  */
 export class OneTrustProvider implements IConsentProvider {
-  private config: IProviderConfig;
+  private config: IOneTrustProviderConfig;
   private isInitialized = false;
 
-  constructor(config: IProviderConfig) {
+  constructor(config: IOneTrustProviderConfig) {
     this.config = config;
   }
 
@@ -49,8 +50,9 @@ export class OneTrustProvider implements IConsentProvider {
         window.Onetrust.ToggleInfoDisplay();
         console.log('[OneTrustProvider] Banner shown via Onetrust.ToggleInfoDisplay()');
         return;
-      } catch (error) {
-        console.error('[OneTrustProvider] Error showing banner via Onetrust:', error);
+      } catch (error : unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('[OneTrustProvider] Error showing banner via Onetrust:', message);
       }
     }
 
@@ -60,8 +62,9 @@ export class OneTrustProvider implements IConsentProvider {
         window.Optanon.ToggleInfoDisplay();
         console.log('[OneTrustProvider] Banner shown via Optanon.ToggleInfoDisplay()');
         return;
-      } catch (error) {
-        console.error('[OneTrustProvider] Error showing banner via Optanon:', error);
+      } catch (error : unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.error('[OneTrustProvider] Error showing banner via Optanon:', message);
       }
     }
 
@@ -101,8 +104,9 @@ export class OneTrustProvider implements IConsentProvider {
 
       document.head.appendChild(script);
       console.log(`[OneTrustProvider] SDK script injected: ${this.config.scriptUrl}`);
-    } catch (error) {
-      console.error('[OneTrustProvider] Failed to inject provider script:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[OneTrustProvider] Failed to inject provider script:', message);
     }
   }
 
@@ -155,8 +159,9 @@ export class OneTrustProvider implements IConsentProvider {
 
           try {
             onConsentInitCallback();
-          } catch (error) {
-            console.error('[OneTrustProvider] Error executing initialization callback:', error);
+          } catch (error : unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.error('[OneTrustProvider] Error executing initialization callback:', message);
           }
         }
 
@@ -168,12 +173,14 @@ export class OneTrustProvider implements IConsentProvider {
                 console.log('🔄 [OneTrustProvider] Consent changed - executing callback');
                 try {
                   onConsentChangedCallback();
-                } catch (error) {
-                  console.error('[OneTrustProvider] Error executing consent changed callback:', error);
+                } catch (error : unknown) {
+                  const message = error instanceof Error ? error.message : String(error);
+                  console.error('[OneTrustProvider] Error executing consent changed callback:', message);
                 }
               });
-            } catch (error) {
-              console.error('[OneTrustProvider] Error registering consent change listener:', error);
+            } catch (error : unknown) {
+              const message = error instanceof Error ? error.message : String(error);
+              console.error('[OneTrustProvider] Error registering consent change listener:', message);
             }
           } else {
             console.warn('[OneTrustProvider] Optanon.OnConsentChanged not available');
@@ -182,8 +189,9 @@ export class OneTrustProvider implements IConsentProvider {
       };
 
       console.log('[OneTrustProvider] OptanonWrapper callback registered');
-    } catch (error) {
-      console.error('[OneTrustProvider] Failed to register callback:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[OneTrustProvider] Failed to register callback:', message);
     }
   }
 }

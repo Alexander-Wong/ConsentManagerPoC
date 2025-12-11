@@ -1,9 +1,9 @@
 import { ConsentEngineConfig } from "../config/ConsentEngineConfig.js";
 import { IConsentProvider } from "../providers/IConsentProvider.js";
-import { ScriptInjectionService } from "../services/script/ScriptInjectionService.js";
 import { CookieManagementService } from "../services/cookies/CookieManagementService.js";
-import { ResourceVisibilityService } from "../services/resources/ResourceVisibilityService.js";
 import { ConsentEvaluationService } from "../services/evaluation/ConsentEvaluationService.js";
+import { ResourceVisibilityService } from "../services/resources/ResourceVisibilityService.js";
+import { ScriptInjectionService } from "../services/script/ScriptInjectionService.js";
 import { ActiveCookies } from "../types/ActiveCookies.js";
 
 
@@ -56,8 +56,9 @@ export class ConsentEngine {
   getActiveConsents(): ActiveCookies {
     try {
       return this.provider.getActiveConsents() || [];
-    } catch (error) {
-      console.error('[ConsentEngine] Failed to get active consents:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[ConsentEngine] Failed to get active consents:', message);
       return [];
     }
   }
@@ -84,8 +85,9 @@ export class ConsentEngine {
         this.config.resources,
         activeCookies
       );
-    } catch (error) {
-      console.error('[ConsentEngine] Failed to evaluate consents:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[ConsentEngine] Failed to evaluate consents:', message);
     }
   }
 
@@ -101,8 +103,9 @@ export class ConsentEngine {
     try {
       this.scriptService.injectAllCategoryScripts(this.config.cookieCategories);
       this.scriptService.injectProviderScript();
-    } catch (error) {
-      console.error('[ConsentEngine] Failed to start:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[ConsentEngine] Failed to start:', message);
     }
   }
 

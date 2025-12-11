@@ -17,7 +17,14 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git reset:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(cat:*)",
+      "Bash(wc:*)",
+      "Bash(ls:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run build:bundle:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run lint:fix:*)"
     ],
     "deny": [],
     "ask": []

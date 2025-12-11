@@ -3,14 +3,30 @@
   "license": "ISC",
   "homepage": "https://github.com/your-org/consent-manager#readme",
   "name": "@vml/consent-manager",
-  "version": "1.3.1",
+  "version": "1.0.0",
   "description": "Provider-agnostic consent management system for GDPR/CCPA cookie compliance",
-  "main": "dist/ConsentWrapper.js",
-  "types": "dist/ConsentWrapper.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/ConsentConfigJson.js",
+      "types": "./dist/types/ConsentConfigJson.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "config",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "npx tsc",
-    "build:bundle": "node ./generator/bundle.js",
+    "build:bundle": "node ./packager/bundle.js",
     "dev": "nodemon server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -50,6 +66,8 @@
     "conventional-changelog-cli": "^5.0.0",
     "esbuild": "^0.27.0",
     "eslint": "^9.39.1",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
     "happy-dom": "^20.0.11",
     "typescript-eslint": "^8.48.1",
     "vitest": "^4.0.14"

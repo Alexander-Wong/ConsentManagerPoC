@@ -19,8 +19,9 @@ export class CookieManagementService {
     try {
       document.cookie = `${name}=; Path=/; Max-Age=0; Secure; SameSite=None`;
       console.log(`🧹 Cookie deleted: ${name}`);
-    } catch (error) {
-      console.error(`[CookieManagementService] Failed to delete cookie ${name}:`, error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[CookieManagementService] Failed to delete cookie ${name}:`, message);
     }
   }
 
@@ -52,8 +53,9 @@ export class CookieManagementService {
     try {
       const cookies = this.getAllCookies();
       return cookies[name] || null;
-    } catch (error) {
-      console.error('[CookieManagementService] Failed to get cookie:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[CookieManagementService] Failed to get cookie:', message);
       return null;
     }
   }
@@ -89,8 +91,9 @@ export class CookieManagementService {
 
         return acc;
       }, {} as Record<string, string>);
-    } catch (error) {
-      console.error('[CookieManagementService] Failed to get all cookies:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[CookieManagementService] Failed to get all cookies:', message);
       return {};
     }
   }

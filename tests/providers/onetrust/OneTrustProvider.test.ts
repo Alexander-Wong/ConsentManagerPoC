@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { OneTrustProvider } from '../../../src/providers/onetrust/OneTrustProvider.js';
-import { ProviderType } from '../../../src/providers/ProviderType.js';
+import { ProviderType } from '../../../src/types/ProviderType.js';
 
 describe('OneTrustProvider', () => {
   let provider: OneTrustProvider;

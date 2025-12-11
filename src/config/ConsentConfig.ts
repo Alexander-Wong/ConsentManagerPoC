@@ -1,8 +1,8 @@
-import { ConsentEngineConfig } from "./ConsentEngineConfig.js";
+import { BaseResource } from "../resources/BaseResource.js";
 import { CookieConditionalType } from "../types/CookieConditionalType.js";
 import { CookieType } from "../types/CookieType.js";
-import { BaseResource } from "../resources/BaseResource.js";
 import { ResourceType } from "../types/ResourceType.js";
+import { ConsentEngineConfig } from "./ConsentEngineConfig.js";
 
 
 export const consentEngineConfig = new ConsentEngineConfig(

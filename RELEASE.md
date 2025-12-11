@@ -1,245 +1,354 @@
-# Release Process Guide
+# Release Process & Bundle Versioning
 
-## Overview
+## Current Version: 1.0.0
 
-This project uses an automated release workflow that handles versioning, changelog generation, and git operations. The workflow enforces [Conventional Commits](https://www.conventionalcommits.org/) format to ensure consistent changelog generation.
+### Bundle Information
+- **Bundle Size:** 21.31 KB (minified ESM)
+- **Format:** ES Module (ESM)
+- **Target:** ES2020
+- **Location:** `bundles/1.0.0/` and `bundles/latest/`
 
-## Quick Start
+---
 
-### 1. Stage Your Changes
+## Version Management
+
+### Semantic Versioning
+This project follows [Semantic Versioning](https://semver.org/):
+
+```
+MAJOR.MINOR.PATCH
+1.0.0
+```
+
+- **MAJOR** - Breaking changes (incompatible API changes)
+- **MINOR** - New features (backward-compatible)
+- **PATCH** - Bug fixes (backward-compatible)
+
+### Release Commands
+
 ```bash
+npm run release:patch    # Bug fixes (1.0.0 → 1.0.1)
+npm run release:minor    # New features (1.0.0 → 1.1.0)
+npm run release:major    # Breaking changes (1.0.0 → 2.0.0)
+```
+
+---
+
+## Bundle Versioning Strategy
+
+### Directory Structure
+```
+bundles/
+├── latest/                           # Always points to current version
+│   └── consent-manager.esm.min.js   # Unversioned filename
+├── 1.0.0/                            # Version 1.0.0
+│   └── consent-manager-1.0.0.esm.min.js
+├── 1.1.0/                            # Version 1.1.0 (future)
+│   └── consent-manager-1.1.0.esm.min.js
+└── 2.0.0/                            # Version 2.0.0 (future)
+    └── consent-manager-2.0.0.esm.min.js
+```
+
+### Usage Patterns
+
+#### Latest Version (Auto-updating)
+```javascript
+// Always uses the newest version
+import { initConsentManager } from './bundles/latest/consent-manager.esm.min.js';
+```
+✅ **Best for:** Development, auto-updating to latest features
+⚠️ **Caution:** May receive breaking changes in major updates
+
+#### Locked Version (Stable)
+```javascript
+// Locked to specific version
+import { initConsentManager } from './bundles/1.0.0/consent-manager-1.0.0.esm.min.js';
+```
+✅ **Best for:** Production, guaranteed stability
+⚠️ **Caution:** Must manually update to get new features
+
+---
+
+## Release Workflow
+
+### Automated Release Process
+
+The release script handles:
+1. Version bump in `package.json`
+2. Bundle generation with version number
+3. Copy to versioned directory (`bundles/1.0.0/`)
+4. Copy to latest directory (`bundles/latest/`)
+5. Git commit with conventional format
+6. Git tag creation (`v1.0.0`)
+7. Push to remote repository
+
+### Step-by-Step Release
+
+```bash
+# 1. Stage your changes
 git add <files>
+
+# 2. Run release command
+npm run release:minor  # or patch/major
+
+# 3. Enter commit description when prompted
+# Example: "add support for Cookiebot provider"
+
+# Script automatically:
+# - Runs tests
+# - Builds bundle
+# - Bumps version
+# - Creates commit: "feat: add support for Cookiebot provider"
+# - Tags release: v1.1.0
+# - Pushes to remote
 ```
 
-### 2. Run Release Command
+---
+
+## Bundle Build Process
+
+### Build Commands
 ```bash
-npm run release:patch   # For bug fixes (1.2.3 → 1.2.4)
-npm run release:minor   # For new features (1.2.3 → 1.3.0)
-npm run release:major   # For breaking changes (1.2.3 → 2.0.0)
+npm run build:bundle     # Build ESM bundle with current version
 ```
 
-### 3. Follow the Prompts
-The script will:
-- Prompt you for a commit description (without type prefix)
-- Run tests automatically
-- Build the project
-- Bump the version in package.json
-- Generate/update CHANGELOG.md
-- Create a properly formatted commit
-- Tag the release
-- Push to remote
+### What Gets Generated
 
-## Commit Message Format
+For version 1.0.0:
+```
+dist/consent-manager-1.0.0.esm.min.js          # Build artifact
+bundles/1.0.0/consent-manager-1.0.0.esm.min.js # Versioned bundle
+bundles/latest/consent-manager.esm.min.js      # Latest bundle
+```
 
-The release script automatically formats your commit messages using Conventional Commits:
+### Version Injection
 
-### Patch Release (Bug Fixes)
+Version number is automatically injected from `package.json`:
+```javascript
+// packager/esbuild.config.js
+const version = packageJson.version; // "1.0.0"
+const outputFilename = `${productName}-${version}.esm.min.js`;
+```
+
+---
+
+## Migration Between Versions
+
+### From 1.0.0 to 1.1.0 (Minor Update)
+
+**No breaking changes - safe to update:**
+
+```javascript
+// Before
+import { initConsentManager } from './bundles/1.0.0/consent-manager-1.0.0.esm.min.js';
+
+// After
+import { initConsentManager } from './bundles/1.1.0/consent-manager-1.1.0.esm.min.js';
+// Or use latest
+import { initConsentManager } from './bundles/latest/consent-manager.esm.min.js';
+```
+
+### From 1.x.x to 2.0.0 (Major Update)
+
+**Breaking changes possible - review changelog:**
+
+1. Read `CHANGELOG.md` for breaking changes
+2. Update code according to migration guide
+3. Test thoroughly before deploying
+4. Update import path:
+```javascript
+import { initConsentManager } from './bundles/2.0.0/consent-manager-2.0.0.esm.min.js';
+```
+
+---
+
+## Version Compatibility
+
+### Current Version (1.0.0)
+
+**Exports:** 17 runtime objects
+- `initConsentManager` (function)
+- `ProviderConfigs` (object)
+- `ProviderType`, `CookieType`, `ResourceType`, `CookieConditionalType` (enums)
+- `ConsentEngineConfig`, `CookieCategory`, `BaseResource` (classes)
+- `ConsentConfigJson`, `CookieCategoryJson`, `ResourceJson` (JSON classes)
+- Service classes for advanced usage
+
+**API:**
+- `ConfigLoaderService.loadFromObj()` - Accepts JSON or class instances
+- `ProviderConfigs.oneTrust()` - OneTrust provider factory
+- `ProviderConfigs.mock()` - Mock provider factory
+
+**Breaking Changes from Previous Versions:**
+- None (initial 1.0.0 release)
+
+---
+
+## Changelog Generation
+
+### Automatic Changelog
+
+Changelog is auto-generated from [Conventional Commits](https://www.conventionalcommits.org/):
+
 ```bash
-npm run release:patch
-# You enter: "resolve cookie deletion issue"
-# Commit created: "fix: resolve cookie deletion issue"
+npm run changelog:update
 ```
 
-### Minor Release (New Features)
-```bash
-npm run release:minor
-# You enter: "add support for Cookiebot provider"
-# Commit created: "feat: add support for Cookiebot provider"
-```
-
-### Major Release (Breaking Changes)
-```bash
-npm run release:major
-# You enter: "redesign consent engine API"
-# Commit created: "feat!: redesign consent engine API"
-```
-
-## Conventional Commits Format
-
-For non-release commits, follow this format:
+### Commit Message Format
 
 ```
 <type>(<scope>): <description>
 
-[optional body]
-
-[optional footer]
+Examples:
+feat(providers): add Cookiebot support
+fix(cookies): resolve deletion race condition
+feat(engine)!: redesign consent evaluation API
 ```
 
-### Common Types
+**Types that appear in changelog:**
+- `feat:` → Features section
+- `fix:` → Bug Fixes section
+- `perf:` → Performance section
+- `feat!:` or `BREAKING CHANGE:` → Breaking Changes section
 
-| Type | Description | Version Bump | Appears in Changelog |
-|------|-------------|--------------|---------------------|
-| `feat` | New feature | Minor | ✅ Features |
-| `fix` | Bug fix | Patch | ✅ Bug Fixes |
-| `feat!` | Breaking change | Major | ✅ BREAKING CHANGES |
-| `docs` | Documentation | - | ❌ |
-| `style` | Code style changes | - | ❌ |
-| `refactor` | Code refactoring | - | ❌ |
-| `perf` | Performance improvements | Patch | ✅ Performance |
-| `test` | Test changes | - | ❌ |
-| `chore` | Maintenance tasks | - | ❌ |
-| `ci` | CI/CD changes | - | ❌ |
+---
 
-### Examples
+## CDN Deployment (Future)
+
+### Recommended CDN Structure
+```
+https://cdn.example.com/consent-manager/
+├── latest/
+│   └── consent-manager.esm.min.js
+├── 1.0.0/
+│   └── consent-manager-1.0.0.esm.min.js
+├── 1.1.0/
+│   └── consent-manager-1.1.0.esm.min.js
+└── 2.0.0/
+    └── consent-manager-2.0.0.esm.min.js
+```
+
+### CDN Usage
+```javascript
+// Latest version
+import { initConsentManager } from 'https://cdn.example.com/consent-manager/latest/consent-manager.esm.min.js';
+
+// Locked version
+import { initConsentManager } from 'https://cdn.example.com/consent-manager/1.0.0/consent-manager-1.0.0.esm.min.js';
+```
+
+---
+
+## Testing Before Release
+
+### Pre-Release Checklist
 
 ```bash
-# Feature
-git commit -m "feat(providers): add Cookiebot provider implementation"
+# 1. Run all tests
+npm run test
 
-# Bug fix
-git commit -m "fix(cookies): resolve deletion race condition"
+# 2. Build TypeScript
+npm run build
 
-# Breaking change (option 1 - ! suffix)
-git commit -m "feat(engine)!: redesign consent evaluation API"
+# 3. Build bundle
+npm run build:bundle
 
-# Breaking change (option 2 - footer)
-git commit -m "feat(engine): redesign consent evaluation
+# 4. Lint code
+npm run lint
 
-BREAKING CHANGE: ConsentEngine.evaluate() now returns a Promise"
+# 5. Test locally
+npm run dev
+# Visit http://localhost:3000 and test functionality
 
-# Performance improvement
-git commit -m "perf(evaluation): optimize cookie evaluation loop"
-
-# Documentation
-git commit -m "docs: update provider integration guide"
-
-# With scope and detailed description
-git commit -m "fix(script-injection): prevent duplicate script loading
-
-- Add deduplication check before script injection
-- Update tests to cover edge cases
-- Closes #42"
+# 6. Check bundle size
+ls -lh bundles/latest/
 ```
 
-## Changelog Generation
+### Expected Results
+- ✅ All 252 tests passing
+- ✅ No TypeScript errors
+- ✅ No lint errors
+- ✅ Bundle size ~21 KB
+- ✅ Manual testing successful
 
-The CHANGELOG.md is automatically generated from commit messages:
+---
 
-### What Appears in Changelog?
-- ✅ `feat:` commits → **Features** section
-- ✅ `fix:` commits → **Bug Fixes** section
-- ✅ `perf:` commits → **Performance Improvements** section
-- ✅ `feat!:` or `BREAKING CHANGE:` → **BREAKING CHANGES** section
-- ❌ Other types (docs, chore, test, etc.) are excluded
+## Rollback Procedure
 
-### Changelog Format
-```markdown
-## [1.3.0](compare-link) (2025-12-02)
+### If Release Fails
 
-### Features
-* **providers**: add Cookiebot provider implementation ([abc1234](commit-link))
-* add resource visibility controls ([def5678](commit-link))
-
-### Bug Fixes
-* **cookies**: resolve deletion race condition ([ghi9012](commit-link))
-```
-
-## Troubleshooting
-
-### Changes Not Appearing in Changelog
-
-**Problem:** Your commits don't show up in CHANGELOG.md
-
-**Solutions:**
-1. Ensure commits use conventional format: `type: description`
-2. Use appropriate types: `feat`, `fix`, or `perf`
-3. Check that commits are between version tags
-4. Verify commits are pushed to the repository
-
-### Release Script Fails
-
-**Problem:** Release script exits with error
-
-**Common Issues:**
-- No staged changes → Stage files first with `git add`
-- Tests failing → Fix test failures before releasing
-- Build errors → Ensure `npm run build` works
-- Empty commit description → Provide a meaningful description
-
-### Unstaged Changes
-
-The release script automatically:
-1. Stashes unstaged changes before release
-2. Restores them after successful release
-3. Keeps your working directory clean
-
-## Best Practices
-
-### 1. Commit Frequently
-Make small, focused commits with clear conventional messages:
 ```bash
-git commit -m "feat(services): add cookie categorization"
-git commit -m "test(services): add cookie service tests"
-git commit -m "docs(services): document cookie service API"
-```
+# 1. Undo last commit (before push)
+git reset --hard HEAD~1
 
-### 2. Stage Only What You Need
-Only stage changes you want in the release:
-```bash
-git add src/services/CookieService.ts
-git add tests/services/CookieService.test.ts
+# 2. Delete version tag
+git tag -d v1.1.0
+
+# 3. Fix issues
+# ... make necessary changes ...
+
+# 4. Re-run release
 npm run release:minor
 ```
 
-### 3. Write Clear Descriptions
-- Use imperative mood: "add feature" not "added feature"
-- Be specific: "fix cookie deletion in Safari" not "fix bug"
-- Reference issues: "closes #42" or "fixes #123"
+### If Already Pushed
 
-### 4. Choose Correct Version Type
-
-| Change Type | Version Command | Example |
-|-------------|----------------|---------|
-| Bug fixes only | `release:patch` | 1.2.3 → 1.2.4 |
-| New features (backward compatible) | `release:minor` | 1.2.3 → 1.3.0 |
-| Breaking changes | `release:major` | 1.2.3 → 2.0.0 |
-
-### 5. Review Before Pushing
-The script automatically pushes. To review first:
 ```bash
-# After release script completes, check:
-git log -1          # View the commit
-git show v1.3.0     # View the tag
-cat CHANGELOG.md    # Review changelog
+# 1. Revert to previous version
+git revert HEAD
 
-# If needed, undo (before script pushes):
-git reset --hard HEAD~1
-git tag -d v1.3.0
+# 2. Delete remote tag (use with caution)
+git push origin :refs/tags/v1.1.0
+
+# 3. Create new patch release with fix
+npm run release:patch
 ```
 
-## Manual Changelog Regeneration
+---
 
-If you need to manually regenerate the changelog:
+## Version History
+
+### v1.0.0 (Current)
+- Initial release
+- OneTrust and Mock provider support
+- Flexible configuration (JSON/Class-based/URL)
+- 17 runtime exports
+- 21.31 KB bundle size
+- 252 passing tests
+
+---
+
+## Development Commands
 
 ```bash
-# Regenerate entire changelog
-npm run changelog:update
-
-# Or use conventional-changelog directly
-npx conventional-changelog -p angular -i CHANGELOG.md -s -r 0
-```
-
-## Version Commands Reference
-
-```bash
-# Show current version
-npm run version:show
+# Version management
+npm run version:show           # Show current version
 
 # Release commands
-npm run release:patch    # Bug fixes (1.2.3 → 1.2.4)
-npm run release:minor    # New features (1.2.3 → 1.3.0)
-npm run release:major    # Breaking changes (1.2.3 → 2.0.0)
+npm run release:patch          # 1.0.0 → 1.0.1
+npm run release:minor          # 1.0.0 → 1.1.0
+npm run release:major          # 1.0.0 → 2.0.0
 
-# Manual version bump (without release process)
+# Manual version bump (without release)
 npm version patch --no-git-tag-version
 npm version minor --no-git-tag-version
 npm version major --no-git-tag-version
+
+# Changelog
+npm run changelog:update       # Regenerate changelog
 ```
 
-## Learn More
+---
 
-- [Conventional Commits Specification](https://www.conventionalcommits.org/)
-- [Semantic Versioning](https://semver.org/)
-- [Keep a Changelog](https://keepachangelog.com/)
-- [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog)
+## Support & Documentation
+
+- **Full Usage Guide:** [HOW-TO-USE.md](HOW-TO-USE.md)
+- **Project Overview:** [README.md](README.md)
+- **Bundle Details:** [BUNDLE_CONFIGURATION.md](BUNDLE_CONFIGURATION.md)
+- **Issues:** [GitHub Issues](https://github.com/Alexander-Wong/ConsentManagerPoC/issues)
+
+---
+
+## License
+
+ISC © VML Team

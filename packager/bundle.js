@@ -22,10 +22,10 @@ async function bundle() {
         const configModule = await import(configPath);
         const { esbuildConfig, outputPath, bundlesPath, version, productName } = configModule;
 
-        console.log('\n📦 Building ConsentManager Bundle...\n');
+        console.log('\n📦 Building ConsentManager ESM Bundle...\n');
         console.log(`   Product: ${productName}`);
         console.log(`   Version: ${version}`);
-        console.log(`   Output: ${outputPath}\n`);
+        console.log(`   ESM Output: ${outputPath}\n`);
 
         // Ensure dist directory exists
         const distDir = path.dirname(outputPath);
@@ -34,16 +34,12 @@ async function bundle() {
             console.log(`✓ Created dist directory\n`);
         }
 
-        // Run esbuild
+        // Build ESM bundle
+        console.log('🔨 Building ESM minified bundle (for import statements)...');
         const result = await esbuild.build(esbuildConfig);
-
-        // Get file size
         const stats = fs.statSync(outputPath);
         const sizeKb = (stats.size / 1024).toFixed(2);
-
-        console.log(`✓ Bundle created successfully!`);
-        console.log(`✓ Output file: ${outputPath}`);
-        console.log(`✓ File size: ${sizeKb} KB\n`);
+        console.log(`✓ ESM bundle created: ${outputPath} (${sizeKb} KB)\n`);
 
         // Generate metadata summary if available
         if (result.metafile) {
@@ -52,27 +48,30 @@ async function bundle() {
             console.log(summary);
         }
 
-        console.log(`✅ Bundle complete: ${productName}-${version}.min.js\n`);
+        console.log(`✅ Bundle complete: ${productName}-${version}.esm.min.js (${sizeKb} KB)\n`);
 
-        // Copy bundle from dist/ to bundles/{version}/
+        // Copy ESM bundle from dist/ to bundles/{version}/
         const versionedBundleDir = path.join(bundlesPath, version);
         if (!fs.existsSync(versionedBundleDir)) {
             fs.mkdirSync(versionedBundleDir, { recursive: true });
             console.log(`✓ Created bundles directory: ${versionedBundleDir}`);
         }
 
-        const bundleDestination = path.join(versionedBundleDir, `${productName}-${version}.min.js`);
-        fs.copyFileSync(outputPath, bundleDestination);
-        console.log(`✓ Bundle copied to: ${bundleDestination}`);
+        // Copy ESM bundle to versioned directory
+        const esmBundleDestination = path.join(versionedBundleDir, `${productName}-${version}.esm.min.js`);
+        fs.copyFileSync(outputPath, esmBundleDestination);
+        console.log(`✓ ESM bundle copied to: ${esmBundleDestination}`);
 
         // Also copy to bundles/latest/ for easy access
         const latestBundleDir = path.join(bundlesPath, 'latest');
         if (!fs.existsSync(latestBundleDir)) {
             fs.mkdirSync(latestBundleDir, { recursive: true });
         }
-        const latestDestination = path.join(latestBundleDir, `${productName}.min.js`);
-        fs.copyFileSync(outputPath, latestDestination);
-        console.log(`✓ Latest bundle updated: ${latestDestination}\n`);
+
+        // Copy ESM to latest
+        const latestEsmDestination = path.join(latestBundleDir, `${productName}.esm.min.js`);
+        fs.copyFileSync(outputPath, latestEsmDestination);
+        console.log(`✓ Latest ESM bundle updated: ${latestEsmDestination}\n`);
 
         process.exit(0);
 

@@ -6,12 +6,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OneTrust PoC</title>
     <link rel="stylesheet" href="/styles.css">
-    <script type="module" src="/ConsentWrapper.js"> </script>
+
+    <script type="module">
+        import {
+            initConsentManager,
+            CookieType,
+            CookieConditionalType,
+            ResourceType,
+            ProviderType,
+            ProviderConfigs,
+            BaseResource,
+            CookieCategory,
+            ConsentEngineConfig
+        } from './bundles/latest/consent-manager.esm.min.js';
+
+
+        // Define configuration inline
+        const consentConfig = new ConsentEngineConfig({
+            cookieCategories: [
+                new CookieCategory({
+                    cookies: [CookieType.C0001],
+                    cookieNames: ['func_site_cookie'],
+                    code: "\n  document.cookie = \"func_site_cookie=1; Path=/; Secure; SameSite=None;\";\n"
+                }),
+                new CookieCategory({
+                    cookies: [CookieType.C0002],
+                    cookieNames: ['perf_cookie'],
+                    code: "\n  document.cookie = \"perf_cookie=1; Path=/; Secure; SameSite=None;\";\n"
+                }),
+                new CookieCategory({
+                    cookies: [CookieType.C0003],
+                    cookieNames: ['extra_func_cookie'],
+                    code: "\n  document.cookie = \"extra_func_cookie=1; Path=/; Secure; SameSite=None;\";\n"
+                }),
+                new CookieCategory({
+                    cookies: [CookieType.C0004],
+                    cookieNames: ['adv_cookie'],
+                    code: "\n  document.cookie = \"adv_cookie=1; Path=/; Secure; SameSite=None;\";\n"
+                }),
+                new CookieCategory({
+                    cookies: [CookieType.C0004],
+                    cookieNames: [],
+                    defer: [
+                        new CookieCategory({
+                            cookies: [],
+                            cookieNames: [],
+                            src: "//assets.adobedtm.com/4d2629481466/1cd67c709daf/launch-2e0718bc6ca3.min.js"
+                        }),
+                        new CookieCategory({
+                            cookies: [],
+                            cookieNames: [],
+                            code: "\n  if (window._satellite) {\n  console.log('scriptB: encontró window._satellite ->', window._satellite);\n } else {\n   console.log('scriptB: NO encontró window._satellite (fallo de orden)');\n                        }\n                    "
+                        })
+                    ]
+                })
+            ],
+            resources: [
+                new BaseResource({
+                    resourceType: ResourceType.Map,
+                    cookies: [CookieType.C0002],
+                    condition: CookieConditionalType.AND
+                }),
+                new BaseResource({
+                    resourceType: ResourceType.Video,
+                    cookies: [CookieType.C0003],
+                    condition: CookieConditionalType.AND
+                }),
+                new BaseResource({
+                    resourceType: ResourceType.Kaltura,
+                    cookies: [CookieType.C0004],
+                    condition: CookieConditionalType.AND
+                })
+            ]
+        });
+
+        // Define OneTrust provider configuration using factory
+        const oneTrustProviderConfig = ProviderConfigs.oneTrust({
+            scriptUrl: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js',
+            domainScript: '01976a4b-0690-72c6-a7ee-3701352a5c93-test',
+            documentLanguage: true
+        });
+
+        await initConsentManager({
+            provider: {
+                type: ProviderType.ONETRUST,
+                config: oneTrustProviderConfig
+            },
+            config: consentConfig,
+        });
+
+    </script>
 </head>
 
 <body>
-
-
     <header>
         <h1>OneTrust PoC</h1>
     </header>

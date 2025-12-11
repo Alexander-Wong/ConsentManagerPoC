@@ -9,11 +9,21 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Serve static files from dist (compiled library)
 app.use(express.static('dist'));
-// Servir archivos estáticos
+
+// Serve static files from public (HTML examples)
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
+// Serve bundled files from bundles directory
+app.use('/bundles', express.static(path.join(__dirname, 'bundles')));
+
+// Handle favicon requests to prevent 404 errors
+app.get('/favicon.ico', (_req, res) => {
+    res.status(204).end(); // No Content
+});
+
+app.get('/', (_req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

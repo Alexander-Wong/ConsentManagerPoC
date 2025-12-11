@@ -21,8 +21,9 @@ export class ResourceVisibilityService {
 
     try {
       resource.checkConsent(activeCookies);
-    } catch (error) {
-      console.error('[ResourceVisibilityService] Failed to evaluate resource:', error);
+    } catch (error : unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('[ResourceVisibilityService] Failed to evaluate resource:', message);
     }
   }
 

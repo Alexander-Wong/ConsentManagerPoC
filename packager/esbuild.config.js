@@ -16,18 +16,19 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(projectRoot, 'package.j
 const version = packageJson.version;
 const productName = 'consent-manager';
 
-// Output filename with version
-const outputFilename = `${productName}-${version}.min.js`;
+// Output filename with version - ESM minified only
+const outputFilename = `${productName}-${version}.esm.min.js`;
 const outputPath = path.join(projectRoot, 'dist', outputFilename);
 const bundlesPath = path.join(projectRoot, 'bundles/');
 
+// ESM bundle configuration (for import statements)
 const esbuildConfig = {
-  entryPoints: [path.join(projectRoot, 'src/ConsentWrapper.ts')],
+  entryPoints: [path.join(projectRoot, 'src/index.ts')],
   bundle: true,
   minify: true,
   sourcemap: false,
   target: 'ES2020',
-  format: 'iife', // Immediately Invoked Function Expression - works globally
+  format: 'esm', // ES Module format - for import/export
   outfile: outputPath,
   external: [], // No external dependencies expected at runtime
   loader: {

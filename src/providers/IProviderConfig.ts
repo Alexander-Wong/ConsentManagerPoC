@@ -2,12 +2,6 @@
  * Configuration options for provider
  */
 export interface IProviderConfig {
-  /** OneTrust SDK script URL */
-  scriptUrl: string;
-  /** OneTrust domain script ID */
-  domainScript: string;
-  /** Enable document language support */
-  documentLanguage?: boolean;
 
   /**
    * Optional callback executed when provider initializes (first load only).
