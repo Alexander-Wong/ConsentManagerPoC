@@ -8,22 +8,25 @@ A sophisticated Cookie Consent Management System with a **provider-agnostic arch
 - **Format:** ES Module (ESM)
 - **Target:** ES2020
 - **Runtime Exports:** 17 objects available for import
-- **Test Coverage:** 252 passing tests
+- **Test Coverage:** 252 passing tests (80%+ coverage)
+- **Code Quality:** ESLint with TypeScript-specific rules
 
 ## Features
 
-- ✅ **Provider-Agnostic Architecture** - Factory pattern supports OneTrust, Cookiebot, or custom providers
+- ✅ **Provider-Agnostic Architecture** - Factory pattern supports OneTrust, Mock, or custom providers
 - ✅ **Multi-Provider Support** - Easily switch between consent management platforms
-- ✅ **Flexible Configuration API** - Supports Plain JSON, Class-based, or URL-based configuration
+- ✅ **Flexible Configuration API** - Supports Class-based or URL-based configuration
 - ✅ **ES Module Bundle** - Import directly in browser with 17 runtime exports
+- ✅ **Service-Oriented Architecture** - Specialized services for scripts, cookies, evaluation, and resources
 - ✅ **Dynamic Script Injection** - Load scripts only when user consents to their category
 - ✅ **Sequential Script Loading** - Guarantee execution order for dependent scripts (e.g., Adobe Launch)
 - ✅ **Cookie Lifecycle Management** - Automatically delete cookies when consent is withdrawn
 - ✅ **UI Resource Control** - Show/hide content (videos, maps, embeds) based on consent
 - ✅ **Real-time Consent Changes** - React immediately when users update their preferences
-- ✅ **Type-Safe** - Written in TypeScript for robust development
+- ✅ **Type-Safe** - Written in TypeScript 5.9+ with strict mode for robust development
 - ✅ **Framework-Agnostic** - Pure TypeScript/JavaScript, works with any framework
 - ✅ **Testable** - Dependency injection enables easy mocking and unit testing
+- ✅ **Mock Provider** - Built-in mock provider for testing and development
 
 ## Architecture
 
@@ -32,37 +35,39 @@ A sophisticated Cookie Consent Management System with a **provider-agnostic arch
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                  Integration Layer                          │
-│              (OneTrustWrapper.ts)                           │
-│  • Application Entry Point                                  │
+│              (ConsentWrapper.ts)                            │
+│  • Main Entry Point (initConsentManager function)          │
 │  • Provider Initialization via Factory                      │
-│  • Event Handling                                           │
+│  • Configuration Loading (URL/Object)                       │
+│  • Event Handling & Callbacks                               │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
-│                   Provider Layer (NEW)                      │
+│                   Provider Layer                            │
 │         (IConsentProvider + Implementations)                │
 │  • Provider Abstraction (Interface)                         │
 │  • OneTrustProvider - OneTrust implementation               │
-│  • CookiebotProvider - Cookiebot implementation (optional)  │
+│  • MockProvider - Test/development implementation           │
 │  • ConsentProviderFactory - Factory Pattern                 │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                     Engine Layer                            │
 │               (ConsentEngine.ts)                            │
-│  • Provider-Agnostic Business Logic                         │
-│  • Script Injection Management                              │
-│  • Cookie Deletion                                          │
-│  • Resource Visibility Control                              │
-│  • Dependency Injection (receives provider)                 │
+│  • Provider-Agnostic Orchestration Logic                    │
+│  • Delegates to Specialized Services                        │
+│  • Coordinates Consent Evaluation                           │
+│  • Dependency Injection (receives provider & services)      │
 └─────────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
-│                 Configuration Layer                         │
-│               (ConsentConfig.ts)                            │
-│  • Cookie Category Definitions (C0001-C0004)                │
-│  • Script Mappings                                          │
-│  • UI Resource Mappings                                     │
+│              Service & Configuration Layer                  │
+│  • ScriptInjectionService - Script management               │
+│  • CookieManagementService - Cookie lifecycle               │
+│  • ConsentEvaluationService - Consent logic                 │
+│  • ResourceVisibilityService - UI resource control          │
+│  • ConfigLoaderService - Configuration loading              │
+│  • ConsentEngineConfig - Cookie & resource definitions      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -71,53 +76,118 @@ A sophisticated Cookie Consent Management System with a **provider-agnostic arch
 ```
 ConsentManagerPoC/
 ├── .github/                    # GitHub configuration
+├── bundles/                    # ES Module bundles
+│   ├── latest/                # Current version bundle
+│   └── 1.0.0/                 # Version-locked bundle
+├── coverage/                   # Test coverage reports
 ├── dist/                       # Compiled JavaScript output
-├── node_modules/               # NPM dependencies
+├── packager/                   # Build and bundling scripts
+│   ├── bundle.js              # ESM bundler script
+│   └── esbuild.config.js      # ESBuild configuration
 ├── public/                     # Static web assets
 │   ├── index.html             # Demo page
 │   └── styles.css             # Styling
-├── src/                        # TypeScript source code
-│   ├── providers/             # ✨ NEW: Provider abstraction layer
-│   │   ├── IConsentProvider.ts        # Provider interface
-│   │   ├── OneTrustProvider.ts        # OneTrust implementation
-│   │   └── ConsentProviderFactory.ts  # Factory pattern
+├── src/                        # TypeScript source code (45 files)
+│   ├── index.ts               # Main export file
+│   ├── ConsentWrapper.ts      # Main entry point (initConsentManager)
+│   │
+│   ├── core/                  # Core engine logic
+│   │   └── ConsentEngine.ts   # Orchestrator
+│   │
+│   ├── providers/             # Provider abstraction layer
+│   │   ├── IConsentProvider.ts           # Provider interface
+│   │   ├── IProviderConfig.ts            # Config interfaces
+│   │   ├── ConsentProviderFactory.ts     # Factory pattern
+│   │   ├── onetrust/
+│   │   │   └── OneTrustProvider.ts       # OneTrust implementation
+│   │   └── mock/
+│   │       └── MockProvider.ts           # Mock implementation
+│   │
+│   ├── config/                # Configuration layer
+│   │   ├── ConsentEngineConfig.ts        # Config container
+│   │   └── ConsentConfig.ts              # Default config instance
+│   │
+│   ├── services/              # Specialized services
+│   │   ├── config/
+│   │   │   └── ConfigLoaderService.ts    # Config loading (URL)
+│   │   ├── cookies/
+│   │   │   └── CookieManagementService.ts # Cookie lifecycle
+│   │   ├── evaluation/
+│   │   │   └── ConsentEvaluationService.ts # Consent evaluation
+│   │   ├── resources/
+│   │   │   └── ResourceVisibilityService.ts # UI resource control
+│   │   └── script/
+│   │       └── ScriptInjectionService.ts  # Script injection
+│   │
 │   ├── resources/
-│   │   ├── BaseResource.ts    # Abstract base class for resources
-│   │   └── Resource.ts        # Concrete resource implementation
-│   ├── ConsentEngine.ts       # Core consent management engine (provider-agnostic)
-│   ├── ConsentEngineConfig.ts # Configuration container class
-│   ├── ConsentConfig.ts       # Concrete configuration instance
-│   ├── OneTrustWrapper.ts     # Application entry point (uses factory)
-│   ├── defer.ts               # Sequential script loading utility
-│   ├── CookieCategory.ts      # Cookie category data model
-│   ├── CookieType.ts          # Cookie type enums and conditions
-│   ├── CookieEvaluator.ts     # Conditional logic evaluator
-│   └── ResourceType.ts        # UI resource type enums
+│   │   └── BaseResource.ts    # Abstract resource base class
+│   │
+│   ├── types/                 # Type definitions
+│   │   ├── CookieType.ts      # Cookie category enums (C0001-C0004)
+│   │   ├── CookieCategory.ts  # Cookie category model
+│   │   ├── ResourceType.ts    # Resource type enums
+│   │   ├── ProviderType.ts    # Provider type enums
+│   │   └── ConsentManagerOptions.ts # Main options interface
+│   │
+│   └── utils/                 # Utility functions
+│       ├── evaluation/
+│       │   └── CookieEvaluator.ts # Conditional logic evaluator
+│       ├── logging/
+│       │   ├── ConsoleLogger.ts
+│       │   └── NoOpLogger.ts
+│       └── script/
+│           └── defer.ts       # Sequential script loader
+│
+├── tests/                      # Test suite (14 test files, 252 tests)
+│   ├── setup.ts               # Test configuration
+│   ├── ConsentWrapper.test.ts # E2E integration tests
+│   ├── core/                  # Core engine tests
+│   ├── providers/             # Provider tests
+│   ├── services/              # Service tests
+│   └── utils/                 # Utility tests
+│
 ├── .gitignore                 # Git ignore rules
+├── eslint.config.js           # ESLint configuration
 ├── global.d.ts                # Global TypeScript declarations
 ├── package.json               # NPM configuration
-├── package-lock.json          # Dependency lock file
+├── release.sh                 # Release automation script
 ├── server.js                  # Express development server
 ├── tsconfig.json              # TypeScript compiler configuration
+├── vitest.config.ts           # Vitest test configuration
+├── CHANGELOG.md               # Version history
+├── HOW-TO-USE.md              # Detailed usage guide
 ├── README.md                  # This file
-├── REFACTORING_PROPOSAL.md    # ✨ Detailed refactoring proposal
-└── MIGRATION_SUMMARY.md       # ✨ Migration summary and changes
+└── RELEASE.md                 # Release process documentation
 ```
 
 ## Technology Stack
 
 ### Runtime Dependencies
-- **OneTrust SDK** - Cookie consent platform (loaded via CDN)
-- **TypeScript 5.9.x** - Type-safe development
-- **Express.js 5.x** - Development server
+- **TypeScript 5.9.3** - Type-safe development language
+- **Express.js 5.1.0** - Development server framework
+- **Nodemon 3.1.10** - Auto-reload during development
+- **OneTrust SDK** - Consent platform (loaded via CDN)
 
 ### Build Tools
 - **TypeScript Compiler** - Transpiles TS to ES2020 JavaScript
-- **Nodemon** - Development auto-reload
+- **ESBuild 0.27.0** - Fast bundling for ESM output
+- **Node.js** - Runtime environment
+
+### Testing & QA
+- **Vitest 4.0.14** - Test runner (Vite-native)
+- **Happy-DOM 20.0.11** - DOM implementation for tests
+- **@vitest/coverage-v8** - Code coverage reporting
+- **@vitest/ui** - Visual test UI
+
+### Code Quality
+- **ESLint 9.39.1** - Code linting
+- **TypeScript-ESLint 8.48.1** - TS-specific linting rules
+- **eslint-plugin-import** - Import order enforcement
 
 ### Module System
 - **ES Modules (ESNext)** - Modern JavaScript module system
 - **Target:** ES2020
+- **Strict Mode:** Full TypeScript type checking
 
 ## Quick Start
 
@@ -131,10 +201,24 @@ ConsentManagerPoC/
     import {
       initConsentManager,
       ProviderType,
-      ProviderConfigs
+      ProviderConfigs,
+      ConsentEngineConfig,
+      CookieCategory,
+      CookieType
     } from './bundles/latest/consent-manager.esm.min.js';
 
-    // Plain JSON configuration
+    // Class-based configuration
+    const config = new ConsentEngineConfig({
+      cookieCategories: [
+        new CookieCategory({
+          cookies: [CookieType.C0001],
+          cookieNames: ['session_cookie'],
+          code: 'document.cookie = "session_cookie=1; Path=/";'
+        })
+      ],
+      resources: []
+    });
+
     await initConsentManager({
       provider: {
         type: ProviderType.ONETRUST,
@@ -143,16 +227,7 @@ ConsentManagerPoC/
           domainScript: 'your-domain-script-id'
         })
       },
-      config: {
-        cookieCategories: [
-          {
-            cookies: ['C0001'],
-            cookieNames: ['session_cookie'],
-            code: 'document.cookie = "session_cookie=1; Path=/";'
-          }
-        ],
-        resources: []
-      }
+      config: config
     });
   </script>
 </head>
@@ -184,48 +259,26 @@ npm run dev
 ### Available Commands
 
 ```bash
-npm run build            # Compile TypeScript
+npm run build            # Compile TypeScript to dist/
 npm run build:bundle     # Build ESM bundle (21.31 KB)
 npm run dev              # Development server with auto-reload
 npm run test             # Run all 252 tests
+npm run test:ui          # Visual test interface
+npm run test:coverage    # Generate coverage report
+npm run test:watch       # Watch mode for development
 npm run lint             # Check code quality
 npm run lint:fix         # Auto-fix linting issues
 npm run release:patch    # Release patch version (1.0.0 → 1.0.1)
 npm run release:minor    # Release minor version (1.0.0 → 1.1.0)
 npm run release:major    # Release major version (1.0.0 → 2.0.0)
+npm run changelog:update # Update CHANGELOG.md
 ```
 
 ## Configuration Approaches
 
-The Consent Manager supports three flexible configuration methods:
+The Consent Manager supports two flexible configuration methods:
 
-### 1. Plain JSON Configuration (Recommended for Simple Use Cases)
-
-```javascript
-import { initConsentManager, ProviderType, ProviderConfigs } from './bundles/latest/consent-manager.esm.min.js';
-
-await initConsentManager({
-  provider: {
-    type: ProviderType.ONETRUST,
-    config: ProviderConfigs.oneTrust({
-      scriptUrl: 'https://cdn.cookielaw.org/scripttemplates/otSDKStub.js',
-      domainScript: 'your-domain-script-id'
-    })
-  },
-  config: {
-    cookieCategories: [
-      {
-        cookies: ['C0001'],
-        cookieNames: ['session_cookie'],
-        code: 'document.cookie = "session_cookie=1";'
-      }
-    ],
-    resources: []
-  }
-});
-```
-
-### 2. Class-Based Configuration (Recommended for Advanced Use Cases)
+### 1. Class-Based Configuration (Recommended)
 
 ```javascript
 import {
@@ -266,7 +319,7 @@ await initConsentManager({
 });
 ```
 
-### 3. URL-Based Configuration (Recommended for Remote Configs)
+### 2. URL-Based Configuration (For Remote Configs)
 
 ```javascript
 await initConsentManager({
@@ -284,23 +337,25 @@ The bundle exports 17 runtime objects:
 
 | Export | Type | Description |
 |--------|------|-------------|
+| **Main Function** | | |
 | `initConsentManager` | Function | Main initialization function |
-| `ProviderConfigs` | Object | Factory for provider configurations |
+| **Configuration Factories** | | |
+| `ProviderConfigs.oneTrust()` | Factory | OneTrust provider config factory |
+| `ProviderConfigs.mock()` | Factory | Mock provider config factory |
+| **Enumerations** | | |
 | `ProviderType` | Enum | Provider types (ONETRUST, MOCK) |
 | `CookieType` | Enum | Cookie categories (C0001-C0004) |
 | `ResourceType` | Enum | Resource types (Map, Video, Kaltura) |
 | `CookieConditionalType` | Enum | Conditional logic (AND, OR) |
+| **Configuration Classes** | | |
 | `ConsentEngineConfig` | Class | Configuration container |
 | `CookieCategory` | Class | Cookie category definition |
 | `BaseResource` | Class | UI resource definition |
-| `ConsentConfigJson` | Class | JSON configuration class |
-| `CookieCategoryJson` | Class | JSON cookie category class |
-| `ResourceJson` | Class | JSON resource class |
 | **Service Classes** | | For advanced usage |
-| `ConfigLoaderService` | Class | Load configs from JSON/URL |
-| `CookieManagementService` | Class | Cookie deletion management |
+| `ConfigLoaderService` | Class | Load configs from URL |
+| `CookieManagementService` | Class | Cookie lifecycle management |
 | `ConsentEvaluationService` | Class | Consent evaluation logic |
-| `ResourceVisibilityService` | Class | UI resource visibility |
+| `ResourceVisibilityService` | Class | UI resource visibility control |
 | `ScriptInjectionService` | Class | Script injection management |
 
 ## Cookie Categories
@@ -318,33 +373,67 @@ The system manages four cookie categories aligned with OneTrust standards:
 
 ### 1. ConsentEngine.ts
 
-The core engine that orchestrates all consent management logic.
+The core orchestrator that coordinates all consent management logic using specialized services.
 
 **Key Methods:**
 
 ```typescript
 class ConsentEngine {
-  // Read OneTrust's active consent groups
-  getCookiesState(): ActiveCookies;
-
-  // Delete cookies when consent is withdrawn
-  evaluateCookiesConsent(): void;
-
-  // Show/hide UI resources based on consent
-  evaluateComponentConsent(): void;
+  // Get active consents from provider
+  getActiveConsents(): ActiveCookies;
 
   // Main orchestration method
   evaluateConsents(): void;
 
-  // Inject OneTrust SDK
-  injectOneTrustScript(): void;
+  // Initialize scripts and provider SDK
+  start(): void;
 
-  // Inject consent-controlled scripts
-  createHeaderScript(category: CookieCategory): void;
+  // Service getters (for testing/advanced usage)
+  get scriptInjectionService(): ScriptInjectionService;
+  get cookieManagementService(): CookieManagementService;
+  get consentEvaluationService(): ConsentEvaluationService;
+  get resourceVisibilityService(): ResourceVisibilityService;
 }
 ```
 
-### 2. defer.ts - Sequential Script Loader
+### 2. Specialized Services
+
+**ScriptInjectionService** - Manages script injection
+```typescript
+// Injects all category scripts
+injectAllCategoryScripts(config: ConsentEngineConfig): void;
+
+// Injects provider SDK
+injectProviderScript(provider: IConsentProvider): void;
+```
+
+**CookieManagementService** - Cookie lifecycle management
+```typescript
+deleteCookie(name: string): void;
+deleteCookies(names: string[]): void;
+getCookie(name: string): string | null;
+getAllCookies(): Record<string, string>;
+```
+
+**ConsentEvaluationService** - Consent evaluation logic
+```typescript
+evaluateCookieConsents(config: ConsentEngineConfig, activeCookies: ActiveCookies): void;
+hasActiveConsent(requiredCookies: CookieType[], activeCookies: ActiveCookies): boolean;
+```
+
+**ResourceVisibilityService** - UI resource visibility
+```typescript
+evaluateAllResources(config: ConsentEngineConfig, activeCookies: ActiveCookies): void;
+evaluateResource(resource: BaseResource, activeCookies: ActiveCookies): void;
+```
+
+**ConfigLoaderService** - Configuration loading
+```typescript
+static loadFromObj(config: ConsentEngineConfig | object): ConsentEngineConfig;
+static loadFromUrl(url: string): Promise<ConsentEngineConfig>;
+```
+
+### 3. defer.ts - Sequential Script Loader
 
 **Purpose:** Ensures scripts execute in order, critical for dependencies.
 
@@ -378,50 +467,72 @@ class Defer {
 }
 ```
 
-### 3. OneTrustWrapper.ts
+### 4. ConsentWrapper.ts
 
-**Entry point** that sets up OneTrust integration.
+**Main entry point** with `initConsentManager` function.
 
 ```typescript
-// Initialize consent engine
-const engine = new ConsentEngine(ConsentConfig);
+// Initializes the consent manager
+async function initConsentManager(options: ConsentManagerOptions): Promise<void> {
+  // 1. Load configuration (from URL or object)
+  const config = options.configUrl
+    ? await ConfigLoaderService.loadFromUrl(options.configUrl)
+    : ConfigLoaderService.loadFromObj(options.config);
 
-// OneTrust callback - fires on page load and consent changes
-function OptanonWrapper() {
-  engine.evaluateConsents();
-
-  // Listen for consent changes
-  Optanon.OnConsentChanged(() => {
-    engine.evaluateConsents();
+  // 2. Create provider via factory
+  const provider = ConsentProviderFactory.createProvider({
+    type: options.provider.type,
+    config: options.provider.config
   });
-}
 
-// Expose globally for OneTrust
-window.OptanonWrapper = OptanonWrapper;
+  // 3. Create engine with services
+  const engine = new ConsentEngine(config, provider);
+
+  // 4. Start engine (inject scripts & SDK)
+  engine.start();
+
+  // 5. Register callbacks
+  provider.callback({
+    onConsentInit: () => engine.evaluateConsents(),
+    onConsentChanged: () => engine.evaluateConsents()
+  });
+
+  // 6. Expose banner function
+  window.showProviderBanner = () => provider.showConsentBanner();
+}
 ```
 
-### 4. CookieEvaluator.ts
+### 5. CookieEvaluator.ts
 
-Evaluates conditional logic for consent requirements.
+Evaluates conditional logic for consent requirements using strategy pattern.
 
 **Supports two strategies:**
 
 ```typescript
-enum CookieCondition {
+enum CookieConditionalType {
   AND,  // All cookies must be active
   OR    // At least one cookie must be active
 }
 
-// Usage
+// Generic evaluation utility
+ConditionalEval.eval<T>(
+  required: T[],                      // Required items
+  active: T[],                        // Active items
+  condition: CookieConditionalType,   // Evaluation strategy
+  compareFn: (a: T, b: T) => boolean  // Comparison function
+): boolean;
+
+// Usage with cookie types
 ConditionalEval.eval(
   [CookieType.C0004],           // Required cookies
   activeCookies,                // User's active consents
-  CookieCondition.AND           // Evaluation strategy
+  CookieConditionalType.AND,    // All must be active
+  (a, b) => a === b
 );
 // Returns: true if all required cookies are active
 ```
 
-### 5. Resource System
+### 6. Resource System
 
 Manages UI resource visibility (videos, maps, embeds).
 
@@ -500,26 +611,34 @@ ConsentConfig.addResource(
 ```
 1. Page Load
    ↓
-2. OneTrustWrapper.injectScripts()
-   → Injects OneTrust SDK
-   → Creates placeholder scripts with consent classes
+2. initConsentManager() called
+   ├──→ Load configuration (from URL or object)
+   ├──→ Create provider via factory
+   ├──→ Create ConsentEngine with services
+   └──→ engine.start()
+        ├──→ ScriptInjectionService.injectAllCategoryScripts()
+        └──→ ScriptInjectionService.injectProviderScript()
    ↓
-3. User Makes Consent Choice (via OneTrust banner)
+3. Provider SDK Loads
    ↓
-4. OptanonWrapper() Callback Triggered
+4. onConsentInit Callback Triggered
    ↓
 5. ConsentEngine.evaluateConsents()
-   ├──→ evaluateCookiesConsent()
-   │    └── Deletes cookies if consent denied
+   ├──→ provider.getActiveConsents()
+   ├──→ ConsentEvaluationService.evaluateCookieConsents()
+   │    ├── Check each cookie category
+   │    ├── Delete cookies if consent withdrawn
+   │    └── Use CookieEvaluator for AND/OR logic
    │
-   └──→ evaluateComponentConsent()
-        └── Shows/hides UI resources
+   └──→ ResourceVisibilityService.evaluateAllResources()
+        ├── Check each BaseResource
+        └── Add/remove overlay classes
    ↓
-6. Scripts Load (if consent granted)
+6. Scripts Load (if consent granted by provider SDK)
    ↓
-7. User Updates Consent
+7. User Updates Consent (via provider banner)
    ↓
-8. Optanon.OnConsentChanged() Event
+8. onConsentChanged Callback Triggered
    ↓
 9. Back to Step 5 (Re-evaluate)
 ```
@@ -646,64 +765,113 @@ new CookieCategory({
 
 ## API Reference
 
-### ConsentEngine
+### initConsentManager(options)
 
-#### `getCookiesState(): ActiveCookies`
-Returns an array of currently active cookie categories.
+Main initialization function.
 
 ```typescript
-const active = engine.getCookiesState();
+interface ConsentManagerOptions {
+  provider: {
+    type: ProviderType;
+    config: IProviderConfig;
+  };
+  config?: ConsentEngineConfig | object;
+  configUrl?: string;
+}
+
+await initConsentManager({
+  provider: {
+    type: ProviderType.ONETRUST,
+    config: ProviderConfigs.oneTrust({ /* ... */ })
+  },
+  config: new ConsentEngineConfig({ /* ... */ })
+});
+```
+
+### ConsentEngine
+
+#### `getActiveConsents(): ActiveCookies`
+Returns an array of currently active cookie categories from the provider.
+
+```typescript
+const active = engine.getActiveConsents();
 // Returns: ['C0001', 'C0002', ...]
 ```
 
 #### `evaluateConsents(): void`
-Main method that evaluates all consents and updates page state.
+Main orchestration method that evaluates all consents and updates page state.
 
 ```typescript
 engine.evaluateConsents();
 ```
 
-#### `injectScripts(): void`
-Injects all configured scripts (OneTrust + consent-controlled scripts).
+#### `start(): void`
+Initializes scripts and provider SDK.
 
 ```typescript
-engine.injectScripts();
+engine.start();
 ```
 
 ### ConsentEngineConfig
 
-#### `addCookieCategory(category: CookieCategory): void`
-Adds a new cookie category configuration.
+#### `constructor(options)`
+Creates a new configuration with cookie categories and resources.
 
 ```typescript
-config.addCookieCategory({
-  cookies: [CookieType.C0003],
-  script: [...],
-  defer: [...],
-  cookiesToDelete: [...]
+const config = new ConsentEngineConfig({
+  cookieCategories: [
+    new CookieCategory({ /* ... */ })
+  ],
+  resources: [
+    new BaseResource({ /* ... */ })
+  ]
 });
-```
-
-#### `addResource(resource: BaseResource): void`
-Adds a UI resource to be controlled by consent.
-
-```typescript
-config.addResource(
-  new Resource([CookieType.C0002], ResourceType.MAP, CookieCondition.AND)
-);
 ```
 
 ### Global Functions
 
-#### `OptanonWrapper()`
-OneTrust callback function (called automatically).
-
-#### `showOneTrustBanner()`
-Programmatically shows the OneTrust consent banner.
+#### `showProviderBanner()`
+Programmatically shows the consent provider's banner.
 
 ```typescript
-window.showOneTrustBanner();
+window.showProviderBanner();
 ```
+
+## Recent Improvements
+
+### Version 1.0.0 Highlights
+
+- **Service-Oriented Architecture**: Refactored into specialized services for better separation of concerns
+- **Enhanced Testing**: 252 comprehensive tests with 80%+ coverage using Vitest
+- **ESLint Integration**: Code quality enforcement with TypeScript-specific rules
+- **Mock Provider**: Built-in mock provider for testing and development
+- **Flexible Configuration Loading**: Support for class-based configs and remote URLs via ConfigLoaderService
+- **Improved Type Safety**: Comprehensive TypeScript interfaces and strict mode
+- **Better Bundling**: Moved to packager/ directory with improved ESBuild configuration
+- **Provider Factory Pattern**: Cleaner provider instantiation with validation
+- **Dependency Injection**: Services injected into ConsentEngine for better testability
+- **Enhanced Documentation**: Added HOW-TO-USE.md and updated RELEASE.md
+
+### Architecture Improvements
+
+1. **Separation of Concerns**: Each service handles a specific responsibility
+   - ScriptInjectionService: Script management
+   - CookieManagementService: Cookie operations
+   - ConsentEvaluationService: Consent logic
+   - ResourceVisibilityService: UI control
+   - ConfigLoaderService: Configuration loading
+
+2. **Provider Abstraction**: Clean interface for multiple consent providers
+   - IConsentProvider interface
+   - Factory pattern for provider creation
+   - OneTrust and Mock implementations included
+   - Easy to add new providers
+
+3. **Testability**: Comprehensive test coverage
+   - Unit tests for all services
+   - Integration tests for ConsentEngine
+   - E2E tests for ConsentWrapper
+   - Mock provider for isolated testing
 
 ## Browser Support
 
@@ -728,12 +896,35 @@ window.showOneTrustBanner();
 3. Add resource to `ConsentConfig.ts`
 4. Test consent behavior
 
+### Testing
+
+The project includes comprehensive test coverage:
+
+```bash
+npm run test              # Run all 252 tests
+npm run test:ui          # Visual test interface
+npm run test:coverage    # Generate coverage report
+npm run test:watch       # Watch mode for development
+```
+
+**Test Structure:**
+- Unit tests for all services
+- Integration tests for ConsentEngine
+- E2E tests for ConsentWrapper
+- Provider tests (OneTrust and Mock)
+- 80%+ code coverage
+
 ### Debugging
 
-The system includes console logging. Check browser console for:
+The system includes optional console logging. Check browser console for:
 - `[ConsentEngine]` - Engine operations
+- `[ScriptInjectionService]` - Script injection events
+- `[CookieManagementService]` - Cookie operations
+- `[ConsentEvaluationService]` - Consent evaluation
+- `[ResourceVisibilityService]` - UI resource state changes
 - `[Defer]` - Sequential script loading
-- `[Resource]` - UI resource state changes
+
+Enable logging by passing a logger to services or using ConsoleLogger.
 
 ## OneTrust Configuration
 
@@ -783,22 +974,30 @@ Ensure your OneTrust account uses these group IDs or update `CookieType.ts` to m
 3. Ensure scripts are accessible (check network tab)
 4. Verify execution order in browser console
 
-## Contributing
+## Additional Documentation
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-[Specify your license here]
+- **[RELEASE.md](RELEASE.md)** - Release process and versioning documentation
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and changes
 
 ## Support
 
 For questions or issues, please open an issue on GitHub.
 
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests (`npm run test`)
+5. Run linter (`npm run lint:fix`)
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+## License
+
+ISC License - P&E VML Team
+
 ---
 
-**Built with TypeScript and OneTrust** | **GDPR/CCPA Compliant** | **Framework Agnostic**
+**Built with TypeScript and Provider-Agnostic Architecture** | **GDPR/CCPA Compliant** | **Framework Agnostic** | **80%+ Test Coverage**
