@@ -14,7 +14,7 @@ export interface CookieCategoryJson {
 }
 
 /**
- * JSON interface that mirrors the existing BaseResource structure
+ * JSON interface that mirrors the existing Resource structure
  */
 export interface ResourceJson {
   resourceType: string;     // ResourceType enum value as string (e.g., "Map", "Video")

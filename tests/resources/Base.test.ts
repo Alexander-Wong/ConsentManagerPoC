@@ -1,17 +1,17 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { BaseResource } from '../../src/resources/BaseResource.js';
+import { Resource } from '../../src/resources/Base.js';
 import { ResourceType } from '../../src/types/ResourceType.js';
 import { CookieType } from '../../src/types/CookieType.js';
 import { CookieConditionalType } from '../../src/types/CookieConditionalType.js';
 
-describe('BaseResource', () => {
+describe('Resource', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
   });
 
   describe('constructor', () => {
     it('should initialize with correct properties', () => {
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -23,7 +23,7 @@ describe('BaseResource', () => {
     });
 
     it('should handle empty cookies array', () => {
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [],
         CookieConditionalType.AND
@@ -37,7 +37,7 @@ describe('BaseResource', () => {
     it('should add overlay class when consent not granted', () => {
       document.body.innerHTML = '<div videotag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -53,7 +53,7 @@ describe('BaseResource', () => {
     it('should add disable-overlay class when consent is granted', () => {
       document.body.innerHTML = '<div videotag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -73,7 +73,7 @@ describe('BaseResource', () => {
         <div videotag></div>
       `;
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -90,7 +90,7 @@ describe('BaseResource', () => {
     it('should toggle classes when consent changes', () => {
       document.body.innerHTML = '<div videotag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -111,7 +111,7 @@ describe('BaseResource', () => {
     it('should handle OR condition', () => {
       document.body.innerHTML = '<div videotag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003, CookieType.C0004],
         CookieConditionalType.OR
@@ -126,7 +126,7 @@ describe('BaseResource', () => {
     it('should handle AND condition with multiple cookies', () => {
       document.body.innerHTML = '<div videotag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003, CookieType.C0004],
         CookieConditionalType.AND
@@ -146,7 +146,7 @@ describe('BaseResource', () => {
     it('should handle no matching elements in DOM', () => {
       document.body.innerHTML = '<div othertag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -164,7 +164,7 @@ describe('BaseResource', () => {
         <div kalturatag></div>
       `;
 
-      const mapResource = new BaseResource(
+      const mapResource = new Resource(
         ResourceType.Map,
         [CookieType.C0002],
         CookieConditionalType.AND
@@ -179,7 +179,7 @@ describe('BaseResource', () => {
     it('should preserve existing classes on element', () => {
       document.body.innerHTML = '<div videotag class="existing-class"></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -195,7 +195,7 @@ describe('BaseResource', () => {
     it('should handle empty activeCookies array', () => {
       document.body.innerHTML = '<div videotag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -210,7 +210,7 @@ describe('BaseResource', () => {
     it('should handle resource with empty cookies array', () => {
       document.body.innerHTML = '<div videotag></div>';
 
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [],
         CookieConditionalType.AND

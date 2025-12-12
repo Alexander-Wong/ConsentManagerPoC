@@ -4,7 +4,7 @@ import { CookieType } from "../types/CookieType.js";
 import { ResourceType } from "../types/ResourceType.js";
 import { ConditionalEval } from "../utils/evaluation/CookieEvaluator.js";
 
-export class BaseResource {
+export class Resource {
   resourceType: ResourceType;
   cookies: CookieType[];
   condition: CookieConditionalType;

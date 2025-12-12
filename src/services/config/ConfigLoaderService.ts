@@ -1,5 +1,5 @@
 import { ConsentEngineConfig } from "../../config/ConsentEngineConfig.js";
-import { BaseResource } from "../../resources/BaseResource.js";
+import { Resource } from "../../resources/Base.js";
 import { ConsentConfigJson, CookieCategoryJson, ResourceJson } from "../../types/ConsentManagerOptions.js";
 import { CookieCategory } from "../../types/CookieCategory.js";
 import { CookieConditionalType } from "../../types/CookieConditionalType.js";
@@ -118,14 +118,14 @@ export class ConfigLoaderService {
   }
 
   /**
-   * Parses resources from JSON and converts to BaseResource instances
-   * Supports both plain JSON objects and BaseResource instances
+   * Parses resources from JSON and converts to Resource instances
+   * Supports both plain JSON objects and Resource instances
    */
-  private static parseResources(resourcesJson: (ResourceJson | BaseResource)[]): BaseResource[] {
+  private static parseResources(resourcesJson: (ResourceJson | Resource)[]): Resource[] {
     return resourcesJson.map((res, index) => {
       try {
-        // If already a BaseResource instance, return it directly
-        if (res instanceof BaseResource) {
+        // If already a Resource instance, return it directly
+        if (res instanceof Resource) {
           return res;
         }
 
@@ -135,7 +135,7 @@ export class ConfigLoaderService {
         const cookies = res.cookies.map(c => this.parseCookieType(c));
         const condition = this.parseConditionalType(res.condition);
 
-        return new BaseResource(resourceType, cookies, condition);
+        return new Resource(resourceType, cookies, condition);
 
       } catch (error : unknown) {
         const message = error instanceof Error ? error.message : String(error);

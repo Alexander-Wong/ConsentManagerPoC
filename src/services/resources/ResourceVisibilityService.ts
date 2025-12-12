@@ -1,4 +1,4 @@
-import { BaseResource } from "../../resources/BaseResource.js";
+import { Resource } from "../../resources/Base.js";
 import { ActiveCookies } from "../../types/ActiveCookies.js";
 
 /**
@@ -8,7 +8,7 @@ export class ResourceVisibilityService {
   /**
    * Evaluates consent for a single resource and updates visibility.
    */
-  evaluateResource(resource: BaseResource, activeCookies: ActiveCookies): void {
+  evaluateResource(resource: Resource, activeCookies: ActiveCookies): void {
     if (!resource) {
       console.warn('[ResourceVisibilityService] Invalid resource');
       return;
@@ -30,7 +30,7 @@ export class ResourceVisibilityService {
   /**
    * Evaluates consent for all resources and updates visibility.
    */
-  evaluateAllResources(resources: BaseResource[], activeCookies: ActiveCookies): void {
+  evaluateAllResources(resources: Resource[], activeCookies: ActiveCookies): void {
     if (!resources || !Array.isArray(resources)) {
       console.warn('[ResourceVisibilityService] Invalid resources array');
       return;

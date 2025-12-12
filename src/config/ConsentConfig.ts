@@ -1,4 +1,4 @@
-import { BaseResource } from "../resources/BaseResource.js";
+import { Resource } from "../resources/Base.js";
 import { CookieConditionalType } from "../types/CookieConditionalType.js";
 import { CookieType } from "../types/CookieType.js";
 import { ResourceType } from "../types/ResourceType.js";
@@ -20,7 +20,7 @@ export const consentEngineConfig = new ConsentEngineConfig(
             cookieNames: ['perf_cookie'],
             code: `
                 document.cookie = "perf_cookie=1; Path=/; Secure; SameSite=None;";
-               console.log("🟢 C0002 script ran — perf_cookie set");
+                console.log("🟢 C0002 script ran — perf_cookie set");
             `
         },
         {
@@ -64,13 +64,13 @@ export const consentEngineConfig = new ConsentEngineConfig(
         }
 
     ], [
-        new BaseResource(ResourceType.Map,
+        new Resource(ResourceType.Map,
                     [CookieType.C0002],
                      CookieConditionalType.AND),
-        new BaseResource(ResourceType.Video,
+        new Resource(ResourceType.Video,
                     [CookieType.C0003],
                     CookieConditionalType.AND),
-        new BaseResource(ResourceType.Kaltura,
+        new Resource(ResourceType.Kaltura,
                     [CookieType.C0004,],
                     CookieConditionalType.AND)
     ]

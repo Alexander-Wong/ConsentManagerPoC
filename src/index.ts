@@ -18,7 +18,7 @@ export { CookieConditionalType } from './types/CookieConditionalType.js';
 
 // Core classes (for advanced usage)
 export { ConsentEngineConfig } from './config/ConsentEngineConfig.js';
-export { BaseResource } from './resources/BaseResource.js';
+export { Resource } from './resources/Base.js';
 export { CookieCategory } from './types/CookieCategory.js';
 
 

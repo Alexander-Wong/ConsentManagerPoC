@@ -5,7 +5,7 @@ import { IConsentProvider } from '../../src/providers/IConsentProvider.js';
 import { CookieType } from '../../src/types/CookieType.js';
 import { ResourceType } from '../../src/types/ResourceType.js';
 import { CookieConditionalType } from '../../src/types/CookieConditionalType.js';
-import { BaseResource } from '../../src/resources/BaseResource.js';
+import { Resource } from '../../src/resources/Base.js';
 import { ScriptInjectionService } from '../../src/services/script/ScriptInjectionService.js';
 import { CookieManagementService } from '../../src/services/cookies/CookieManagementService.js';
 import { ResourceVisibilityService } from '../../src/services/resources/ResourceVisibilityService.js';
@@ -35,7 +35,7 @@ describe('ConsentEngine', () => {
         }
       ] as any,
       [
-        new BaseResource(
+        new Resource(
           ResourceType.Video,
           [CookieType.C0003],
           CookieConditionalType.AND

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ResourceVisibilityService } from '../../../src/services/resources/ResourceVisibilityService.js';
-import { BaseResource } from '../../../src/resources/BaseResource.js';
+import { Resource } from '../../../src/resources/Base.js';
 import { ResourceType } from '../../../src/types/ResourceType.js';
 import { CookieType } from '../../../src/types/CookieType.js';
 import { CookieConditionalType } from '../../../src/types/CookieConditionalType.js';
@@ -15,7 +15,7 @@ describe('ResourceVisibilityService', () => {
 
   describe('evaluateResource', () => {
     it('should call resource.checkConsent with active cookies', () => {
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -36,7 +36,7 @@ describe('ResourceVisibilityService', () => {
     });
 
     it('should handle invalid activeCookies', () => {
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -48,7 +48,7 @@ describe('ResourceVisibilityService', () => {
     });
 
     it('should handle resource.checkConsent errors gracefully', () => {
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -66,12 +66,12 @@ describe('ResourceVisibilityService', () => {
 
   describe('evaluateAllResources', () => {
     it('should evaluate multiple resources', () => {
-      const resource1 = new BaseResource(
+      const resource1 = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
       );
-      const resource2 = new BaseResource(
+      const resource2 = new Resource(
         ResourceType.Map,
         [CookieType.C0002],
         CookieConditionalType.AND
@@ -95,7 +95,7 @@ describe('ResourceVisibilityService', () => {
     });
 
     it('should skip null resources in array', () => {
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
@@ -114,7 +114,7 @@ describe('ResourceVisibilityService', () => {
     });
 
     it('should handle null activeCookies', () => {
-      const resource = new BaseResource(
+      const resource = new Resource(
         ResourceType.Video,
         [CookieType.C0003],
         CookieConditionalType.AND
